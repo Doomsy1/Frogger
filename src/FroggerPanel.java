@@ -65,7 +65,7 @@ class FroggerPanel extends JPanel implements KeyListener, ActionListener, MouseL
 	
 	private boolean checkDeath() {
 		// Check if frog is off screen
-		if (frog.notVisible()) {
+		if (frog.offScreen()) {
 			return true;
 		}
 
