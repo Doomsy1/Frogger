@@ -13,12 +13,14 @@ class FroggerPanel extends JPanel implements KeyListener, ActionListener, MouseL
 	private int score;
 
 	private boolean[] keys;
+	private boolean[] processedKeys;
 	Timer timer;
 	private Frog frog;
 	private Font fontComic; // Change font
 
 	public FroggerPanel() {
 		keys = new boolean[KeyEvent.KEY_LAST + 1];
+		processedKeys = new boolean[KeyEvent.KEY_LAST + 1];
 		frog = new Frog(this, KeyEvent.VK_RIGHT, KeyEvent.VK_UP, KeyEvent.VK_LEFT, KeyEvent.VK_DOWN);
 		score = 0;
 		fontComic = new Font("Comic Sans MS", Font.PLAIN, 32);
@@ -56,12 +58,16 @@ class FroggerPanel extends JPanel implements KeyListener, ActionListener, MouseL
 	public void keyReleased(KeyEvent ke) {
 		int key = ke.getKeyCode();
 		keys[key] = false;
+		processedKeys[key] = false;
 	}
 
 	@Override
 	public void keyPressed(KeyEvent ke) {
 		int key = ke.getKeyCode();
-		keys[key] = true;
+		if (!processedKeys[key]) {
+			keys[key] = true;
+			processedKeys[key] = true;
+		}
 	}
 
 	@Override
