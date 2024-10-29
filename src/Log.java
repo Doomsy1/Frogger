@@ -6,12 +6,20 @@ public class Log extends MovingObject {
         super(x, y, length * 50, speed, left);
     }
 
+    public int getX() {
+        return x;
+    }
+
+    public int getVelocity() {
+        return speed * (left ? -1 : 1);
+    }
+
     public void draw(Graphics g) {
         g.setColor(Color.ORANGE);
         g.fillRect(x, y, width, HEIGHT);
     }
 
-    public boolean collides(Frog frog) {
-        return getRect().intersects(frog.getRect());
+    public boolean collides(Rectangle r) {
+        return getRect().intersects(r);
     }
 }

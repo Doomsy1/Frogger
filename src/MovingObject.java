@@ -33,6 +33,6 @@ public class MovingObject {
     }
 
     public boolean notVisible() {
-        return x < width || x > 800;
+        return x < -width || x > 800 + width;
     }
 }

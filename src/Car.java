@@ -19,7 +19,7 @@ public class Car extends MovingObject {
         g.fillRect(x, y, width, HEIGHT);
     }
 
-    public boolean collides(Frog frog) {
-        return getRect().intersects(frog.getRect());
+    public boolean collides(Rectangle r) {
+        return getRect().intersects(r);
     }
 }
