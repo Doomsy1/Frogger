@@ -42,8 +42,8 @@ class FroggerPanel extends JPanel implements KeyListener, ActionListener, MouseL
 
 		// Logs
 		logs = new ArrayList<>();
-		logs.add(new Log(3, 0, 100, 10, true));
-		logs.add(new Log(3, 0, 200, 10, false));
+		logs.add(new Log(3, 0, 150, 10, true));
+		logs.add(new Log(3, 0, 250, 10, false));
 		logs.add(new Log(3, 0, 350, 10, true));
 
 		// Terrain
@@ -59,7 +59,7 @@ class FroggerPanel extends JPanel implements KeyListener, ActionListener, MouseL
 		requestFocus();
 		addKeyListener(this);
 		addMouseListener(this);
-		timer = new Timer(20, this);
+		timer = new Timer(16, this);
 		timer.start();
 	}
 	

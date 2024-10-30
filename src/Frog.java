@@ -8,7 +8,7 @@ public class Frog {
     private final int[] movementKeys;
     private final FroggerPanel fp;
 
-    private static final int JUMP_DIST = 50;
+    private static final int JUMP_DIST = 100;
     private static final int RIGHT = 0, UP = 1, LEFT = 2, DOWN = 3;
     private final ArrayList<Integer> jumpStack = new ArrayList<>();
     private static final int STACK_SIZE = 2;
@@ -29,6 +29,7 @@ public class Frog {
         jumpY = y;
         facing = UP;
         inAir = false;
+        clearJumpStack();
     }
 
     public Rectangle getRect() {
@@ -51,6 +52,10 @@ public class Frog {
         jumpStack.add(direction);
     }
 
+    private void clearJumpStack() {
+        jumpStack.clear();
+    }
+
     private void move() {
         if (jumpStack.isEmpty() && x == jumpX && y == jumpY) {
             inAir = false;
@@ -60,7 +65,7 @@ public class Frog {
         if (x == jumpX && y == jumpY && !jumpStack.isEmpty()) {
             facing = jumpStack.remove(0);
             jumpProgress = 0.0;
-
+            
             // If the frog is at the edge of the screen and it is trying to move off the screen, don't jump
             if ((facing == LEFT && x <= 0) || (facing == RIGHT && x >= 800 - JUMP_DIST) || (facing == UP && y <= 0) || (facing == DOWN && y >= 800 - JUMP_DIST)) {
                 return;
@@ -80,11 +85,11 @@ public class Frog {
         x = (int) (x + (jumpX - x) * progress);
         y = (int) (y + (jumpY - y) * progress);
 
-        jumpProgress += 0.25;
-
-        if (jumpProgress >= 1.0) {
+        jumpProgress += 0.1;
+        if (jumpProgress >= 1.0 || (x == jumpX && y == jumpY)) {
             x = jumpX;
             y = jumpY;
+            inAir = false;
         }
         fp.addScore(100); // TEST
     }
@@ -94,7 +99,7 @@ public class Frog {
     }
 
     public boolean isRiding(Log l) {
-        return l.collides(getRect());
+        return l.collides(getRect()) && !inAir;
     }
 
     public void slide(Log l) {
