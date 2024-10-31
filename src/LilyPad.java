@@ -1,19 +1,21 @@
 import java.awt.*;
 
-public class Lily extends MovingObject {
+public class LilyPad extends MovingObject {
     private final boolean breathing;
     private double breath = 0;
 
-    public Lily(int x, int y, int speed, boolean left, boolean breathing) {
+    private static final int BREATH_SPEED = 120; // Breathing cycle duration in frames
+
+    public LilyPad(int x, int y, int speed, boolean left, boolean breathing) {
         super(x, y, 50, speed, left);
         this.breathing = breathing;
     }
 
     public void draw(Graphics g) {
-        g.setColor(Color.GREEN);
-        if (breathing) {
-            g.setColor(Color.CYAN);
+        if (isUnderwater()) {
+            return;
         }
+        g.setColor(Color.GREEN);
         g.fillRect(x, y, width, HEIGHT);
     }
     
@@ -22,12 +24,12 @@ public class Lily extends MovingObject {
     }
     
     public boolean isUnderwater() {
-        return breathing && breath % 1 < 0.5;
+        return breathing && breath < 0.5;
     }
     
     @Override
     public void move() {
-        breath += 0.1;
+        breath = (breath + 1.0 / BREATH_SPEED) % 1;
         if (left) {
             x -= speed;
         } else {

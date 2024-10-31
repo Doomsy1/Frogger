@@ -8,7 +8,7 @@ public class Frog {
     private final int[] movementKeys;
     private final FroggerPanel fp;
 
-    private static final int JUMP_DIST = 100;
+    private static final int JUMP_DIST = 50;
     private static final int RIGHT = 0, UP = 1, LEFT = 2, DOWN = 3;
     private final ArrayList<Integer> jumpStack = new ArrayList<>();
     private static final int STACK_SIZE = 2;
@@ -80,18 +80,20 @@ public class Frog {
             }
         }
 
-        // Ease in/out
-        double progress = Math.sin(jumpProgress * Math.PI);
+        // Ease out
+        double progress = 1.0 - Math.pow(1.0 - jumpProgress, 2); // Quadratic ease out
         x = (int) (x + (jumpX - x) * progress);
         y = (int) (y + (jumpY - y) * progress);
 
-        jumpProgress += 0.1;
+        jumpProgress += 0.25;
+        
+        System.out.println(x - jumpX);
+
         if (jumpProgress >= 1.0 || (x == jumpX && y == jumpY)) {
             x = jumpX;
             y = jumpY;
             inAir = false;
         }
-        fp.addScore(100); // TEST
     }
     
     public boolean isColliding(Terrain t) {
@@ -102,9 +104,18 @@ public class Frog {
         return l.collides(getRect()) && !inAir;
     }
 
+    public boolean isRiding(LilyPad lp) {
+        return lp.collides(getRect()) && !inAir && !lp.isUnderwater();
+    }
+
     public void slide(Log l) {
         x += l.getVelocity();
         jumpX += l.getVelocity();
+    }
+
+    public void slide(LilyPad lp) {
+        x += lp.getVelocity();
+        jumpX += lp.getVelocity();
     }
 
     public boolean isColliding(Car c) {

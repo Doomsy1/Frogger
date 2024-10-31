@@ -21,6 +21,7 @@ class FroggerPanel extends JPanel implements KeyListener, ActionListener, MouseL
 
 	private final ArrayList<Car> cars;
 	private final ArrayList<Log> logs;
+	private final ArrayList<LilyPad> lilyPads;
 
 	private final Terrain grass;
 	private final Terrain water;
@@ -42,9 +43,15 @@ class FroggerPanel extends JPanel implements KeyListener, ActionListener, MouseL
 
 		// Logs
 		logs = new ArrayList<>();
-		logs.add(new Log(3, 0, 150, 10, true));
-		logs.add(new Log(3, 0, 250, 10, false));
-		logs.add(new Log(3, 0, 350, 10, true));
+		logs.add(new Log(3, 0, 150, 7, true));
+		logs.add(new Log(3, 0, 250, 6, false));
+		logs.add(new Log(3, 0, 350, 5, true));
+
+		// Lily pads
+		lilyPads = new ArrayList<>();
+		lilyPads.add(new LilyPad(0, 100, 5, false, true));
+		lilyPads.add(new LilyPad(0, 200, 6, true, true));
+		lilyPads.add(new LilyPad(0, 300, 8, false, true));
 
 		// Terrain
 		water = new Terrain(0, 0, WIDTH, HEIGHT / 2, Terrain.WATER);
@@ -76,6 +83,13 @@ class FroggerPanel extends JPanel implements KeyListener, ActionListener, MouseL
 			}
 		}
 
+		// Check if the frog is riding a lily pad
+		for (LilyPad lp : lilyPads) {
+			if (frog.isRiding(lp)) {
+				return false;
+			}
+		}
+
 		// Check if the frog is colliding with a car
 		for (Car c : cars) {
 			if (frog.isColliding(c)) {
@@ -100,14 +114,24 @@ class FroggerPanel extends JPanel implements KeyListener, ActionListener, MouseL
 				frog.reset();
 			}
 
-			// Move cars and logs
+			// Move cars
 			for (Car c : cars) {
 				c.move();
 			}
+
+			// Move logs
 			for (Log l : logs) {
 				l.move();
 				if (frog.isRiding(l)) {
 					frog.slide(l);
+				}
+			}
+
+			// Move lily pads
+			for (LilyPad lp : lilyPads) {
+				lp.move();
+				if (frog.isRiding(lp)) {
+					frog.slide(lp);
 				}
 			}
 		}
@@ -193,6 +217,11 @@ class FroggerPanel extends JPanel implements KeyListener, ActionListener, MouseL
 			// Draw logs
 			for (Log l : logs) {
 				l.draw(g);
+			}
+
+			// Draw lily pads
+			for (LilyPad lp : lilyPads) {
+				lp.draw(g);
 			}
 
 			// Draw frog

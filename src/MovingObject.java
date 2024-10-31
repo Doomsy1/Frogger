@@ -32,6 +32,14 @@ public class MovingObject {
         }
     }
 
+    public int getX() {
+        return x;
+    }
+
+    public int getVelocity() {
+        return speed * (left ? -1 : 1);
+    }
+
     public boolean notVisible() {
         return x < -width || x > 800 + width;
     }

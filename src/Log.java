@@ -6,16 +6,8 @@ public class Log extends MovingObject {
         super(x, y, length * 50, speed, left);
     }
 
-    public int getX() {
-        return x;
-    }
-
-    public int getVelocity() {
-        return speed * (left ? -1 : 1);
-    }
-
     public void draw(Graphics g) {
-        g.setColor(Color.ORANGE);
+        g.setColor(new Color(139, 69, 19));
         g.fillRect(x, y, width, HEIGHT);
     }
 
