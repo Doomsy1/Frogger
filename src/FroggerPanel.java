@@ -10,8 +10,11 @@ import javax.swing.*;
 class FroggerPanel extends JPanel implements KeyListener, ActionListener, MouseListener {
 	public static final int INTRO = 0, GAME = 1, END = 2;
 	public static final int WIDTH = 800, HEIGHT = 800;
+	private static final int FPS = 60;
 	private int screen = GAME; // Change to intro
 	private int score;
+	private LifeCounter lifeCounter = new LifeCounter(400, 0, 3);
+	private TimerBar timerBar = new TimerBar(0, 0, 100, 20, 10, FPS);
 
 	private final boolean[] keys;
 	private final boolean[] keyPressed;
@@ -22,6 +25,8 @@ class FroggerPanel extends JPanel implements KeyListener, ActionListener, MouseL
 	private final ArrayList<Car> cars;
 	private final ArrayList<Log> logs;
 	private final ArrayList<LilyPad> lilyPads;
+
+	private final ArrayList<Goal> goals;
 
 	private final Terrain grass;
 	private final Terrain water;
@@ -37,26 +42,29 @@ class FroggerPanel extends JPanel implements KeyListener, ActionListener, MouseL
 
 		// Cars
 		cars = new ArrayList<>();
-		cars.add(new Car(Car.RED, 0, 400, 50, 10, true));
-		cars.add(new Car(Car.RED, 0, 500, 50, 10, false));
-		cars.add(new Car(Car.RED, 0, 600, 50, 10, true));
+		createCars(700, 50, 4, true, Car.RED, 3);
+		createCars(650, 50, 3, false, Car.RED, 3);
+		createCars(600, 50, 6, true, Car.RED, 3);
+		createCars(550, 50, 4, false, Car.RED, 3);
+		createCars(500, 75, 5, true, Car.RED, 3);
 
-		// Logs
+		// Logs and lily pads
 		logs = new ArrayList<>();
-		logs.add(new Log(3, 0, 150, 7, true));
-		logs.add(new Log(3, 0, 250, 6, false));
-		logs.add(new Log(3, 0, 350, 5, true));
-
-		// Lily pads
 		lilyPads = new ArrayList<>();
-		lilyPads.add(new LilyPad(0, 100, 5, false, true));
-		lilyPads.add(new LilyPad(0, 200, 6, true, true));
-		lilyPads.add(new LilyPad(0, 300, 8, false, true));
+		createLilyPads(350, 150, 5, true, 4);
+		createLogs(300, 150, 3, false, 3);
+		createLogs(250, 200, 5, false, 2);
+		createLilyPads(200, 100, 5, true, 4);
+		createLogs(150, 175, 2, false, 3);
+
+
+		// Goals
+		goals = new ArrayList<>();
+		createGoals(75, 100, 5, 150);
 
 		// Terrain
 		water = new Terrain(0, 0, WIDTH, HEIGHT / 2, Terrain.WATER);
 		grass = new Terrain(0, HEIGHT / 2, WIDTH, HEIGHT / 2, Terrain.GRASS);
-
 
 		score = 0;
 		fontComic = new Font("Comic Sans MS", Font.PLAIN, 32);
@@ -66,10 +74,38 @@ class FroggerPanel extends JPanel implements KeyListener, ActionListener, MouseL
 		requestFocus();
 		addKeyListener(this);
 		addMouseListener(this);
-		timer = new Timer(16, this);
+		timer = new Timer(1000 / FPS, this);
 		timer.start();
 	}
-	
+
+	private void createCars(int y, int width, int speed, boolean left, int color, int count) {
+		int gap = (800 / (count));
+		for (int i = 0; i < count; i++) {
+			cars.add(new Car(gap * i, y, width, speed, left, color));
+		}
+	}
+
+	private void createLogs(int y, int width, int speed, boolean left, int count) {
+		int gap = (800 / (count));
+		for (int i = 0; i < count; i++) {
+			logs.add(new Log(gap * i, y, width, speed, left));
+		}
+	}
+
+	private void createLilyPads(int y, int width, int speed, boolean left, int count) {
+		int gap = (800 / (count));
+		for (int i = 0; i < count; i++) {
+			boolean breathing = (i == count - 1); // Only the last lily pad breathes
+			lilyPads.add(new LilyPad(gap * i, y, width, speed, left, breathing));
+		}
+	}
+
+	private void createGoals(int x, int y, int count, int gap) {
+		for (int i = 0; i < count; i++) {
+			goals.add(new Goal(gap * i + x, y));
+		}
+	}
+
 	private boolean checkDeath() {
 		// Check if frog is off screen
 		if (frog.offScreen()) {
@@ -97,6 +133,11 @@ class FroggerPanel extends JPanel implements KeyListener, ActionListener, MouseL
 			}
 		}
 
+		// Check if the frog is over the time limit
+		if (timerBar.isOverTimeLimit()) {
+			return true;
+		}
+
 		// Check if the frog is colliding with water
 		return frog.isColliding(water) && !frog.inAir();
 	}
@@ -105,13 +146,29 @@ class FroggerPanel extends JPanel implements KeyListener, ActionListener, MouseL
 		if (screen == INTRO) {
 
 		} else if (screen == GAME) {
+			// Update time spent
+			timerBar.update();
+
 			// Move frog
 			frog.move(keyPressed);
+
+			// Check for goal
+			for (Goal goal : goals) {
+				if (frog.isColliding(goal)) {
+					if (goal.fill()) {
+						frog.reset();
+						addScore(100);
+						timerBar.reset();
+					}
+				}
+			}
 
 			// Check for death
 			if (checkDeath()) {
 				screen = GAME; // TEST
 				frog.reset();
+				timerBar.reset();
+				lifeCounter.loseLife();
 			}
 
 			// Move cars
@@ -135,7 +192,7 @@ class FroggerPanel extends JPanel implements KeyListener, ActionListener, MouseL
 				}
 			}
 		}
-		
+
 		for (int i = 0; i < keyPressed.length; i++) {
 			keyPressed[i] = false;
 		}
@@ -199,8 +256,7 @@ class FroggerPanel extends JPanel implements KeyListener, ActionListener, MouseL
 	public void paint(Graphics g) {
 		if (screen == INTRO) {
 
-		} 
-		else if (screen == GAME) {
+		} else if (screen == GAME) {
 
 			g.setColor(Color.BLACK);
 			g.fillRect(0, 0, getWidth(), getHeight());
@@ -224,8 +280,19 @@ class FroggerPanel extends JPanel implements KeyListener, ActionListener, MouseL
 				lp.draw(g);
 			}
 
+			// Draw goals
+			for (Goal goal : goals) {
+				goal.draw(g);
+			}
+
 			// Draw frog
 			frog.draw(g);
+
+			// Draw timer bar
+			timerBar.draw(g);
+
+			// Draw life counter
+			lifeCounter.draw(g);
 
 			// Draw score
 			g.setFont(fontComic);

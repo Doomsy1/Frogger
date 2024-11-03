@@ -6,8 +6,8 @@ public class LilyPad extends MovingObject {
 
     private static final int BREATH_SPEED = 120; // Breathing cycle duration in frames
 
-    public LilyPad(int x, int y, int speed, boolean left, boolean breathing) {
-        super(x, y, 50, speed, left);
+    public LilyPad(int x, int y, int width, int speed, boolean left, boolean breathing) {
+        super(x, y, width, speed, left);
         this.breathing = breathing;
     }
 
@@ -15,12 +15,8 @@ public class LilyPad extends MovingObject {
         if (isUnderwater()) {
             return;
         }
-        g.setColor(Color.GREEN);
+        g.setColor(new Color(144, 238, 144)); // Light green color
         g.fillRect(x, y, width, HEIGHT);
-    }
-    
-    public boolean collides(Rectangle r) {
-        return getRect().intersects(r);
     }
     
     public boolean isUnderwater() {

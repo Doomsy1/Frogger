@@ -11,10 +11,11 @@ public class Frog {
     private static final int JUMP_DIST = 50;
     private static final int RIGHT = 0, UP = 1, LEFT = 2, DOWN = 3;
     private final ArrayList<Integer> jumpStack = new ArrayList<>();
-    private static final int STACK_SIZE = 2;
+    private static final int STACK_SIZE = 5;
 
     private double jumpProgress = 0.0;
     private boolean inAir = false;
+    private int momentum = 0;
 
     public Frog(FroggerPanel froggerPanel, int moveRight, int moveUp, int moveLeft, int moveDown) {
         fp = froggerPanel;
@@ -64,6 +65,7 @@ public class Frog {
 
         if (x == jumpX && y == jumpY && !jumpStack.isEmpty()) {
             facing = jumpStack.remove(0);
+            momentum = 0; // x momentum TODO
             jumpProgress = 0.0;
             
             // If the frog is at the edge of the screen and it is trying to move off the screen, don't jump
@@ -81,14 +83,12 @@ public class Frog {
         }
 
         // Ease out
-        double progress = 1.0 - Math.pow(1.0 - jumpProgress, 2); // Quadratic ease out
-        x = (int) (x + (jumpX - x) * progress);
+        double progress = 1.0 - Math.pow(1.0 - jumpProgress, 2);
+        x = (int) (x + (jumpX - x) * progress + momentum);
         y = (int) (y + (jumpY - y) * progress);
 
         jumpProgress += 0.25;
         
-        System.out.println(x - jumpX);
-
         if (jumpProgress >= 1.0 || (x == jumpX && y == jumpY)) {
             x = jumpX;
             y = jumpY;
@@ -99,15 +99,23 @@ public class Frog {
     public boolean isColliding(Terrain t) {
         return t.isColliding(getRect());
     }
+    
+    public boolean isColliding(Goal g) {
+        return getRect().intersects(g.getRect());
+    }
+    
+    public boolean isColliding(Car c) {
+        return getRect().intersects(c.getRect());
+    }
+    
+    public boolean isRiding(LilyPad lp) {
+        return getRect().intersects(lp.getRect()) && !inAir && !lp.isUnderwater();
+    }
 
     public boolean isRiding(Log l) {
-        return l.collides(getRect()) && !inAir;
+        return getRect().intersects(l.getRect()) && !inAir;
     }
-
-    public boolean isRiding(LilyPad lp) {
-        return lp.collides(getRect()) && !inAir && !lp.isUnderwater();
-    }
-
+    
     public void slide(Log l) {
         x += l.getVelocity();
         jumpX += l.getVelocity();
@@ -116,10 +124,6 @@ public class Frog {
     public void slide(LilyPad lp) {
         x += lp.getVelocity();
         jumpX += lp.getVelocity();
-    }
-
-    public boolean isColliding(Car c) {
-        return c.collides(getRect());
     }
 
     public boolean inAir() {
