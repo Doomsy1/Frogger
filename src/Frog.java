@@ -1,3 +1,9 @@
+/*
+ * Frog.java
+ * Ario Barin Ostovary
+ * This class controls the frog's movement, jumping, drawing, and collision detection
+ */
+
 import java.awt.*;
 import java.util.ArrayList;
 
@@ -97,7 +103,7 @@ public class Frog {
     }
     
     public boolean isColliding(Terrain t) {
-        return t.isColliding(getRect());
+        return getRect().intersects(t.getRect());
     }
     
     public boolean isColliding(Goal g) {
@@ -107,6 +113,10 @@ public class Frog {
     public boolean isColliding(Car c) {
         return getRect().intersects(c.getRect());
     }
+
+    public boolean isBeingEaten(Alligator a) {
+        return getRect().intersects(a.getMouthRect()) && a.mouthIsOpen();
+    }
     
     public boolean isRiding(LilyPad lp) {
         return getRect().intersects(lp.getRect()) && !inAir && !lp.isUnderwater();
@@ -114,6 +124,10 @@ public class Frog {
 
     public boolean isRiding(Log l) {
         return getRect().intersects(l.getRect()) && !inAir;
+    }
+
+    public boolean isRiding(Alligator a) {
+        return getRect().intersects(a.getRect()) && !inAir;
     }
     
     public void slide(Log l) {
@@ -124,6 +138,11 @@ public class Frog {
     public void slide(LilyPad lp) {
         x += lp.getVelocity();
         jumpX += lp.getVelocity();
+    }
+
+    public void slide(Alligator a) {
+        x += a.getVelocity();
+        jumpX += a.getVelocity();
     }
 
     public boolean inAir() {

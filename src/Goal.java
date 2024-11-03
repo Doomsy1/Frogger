@@ -1,3 +1,9 @@
+/*
+ * Goal.java
+ * Ario Barin Ostovary
+ * This class controls the goal's drawing
+ */
+
 import java.awt.*;
 
 public class Goal {

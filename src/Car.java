@@ -1,3 +1,9 @@
+/*
+ * Car.java
+ * Ario Barin Ostovary
+ * This class controls the car's drawing
+ */
+
 import java.awt.*;
 
 public class Car extends MovingObject {

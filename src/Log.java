@@ -1,3 +1,9 @@
+/*
+ * Log.java
+ * Ario Barin Ostovary
+ * This class controls the log's drawing
+ */
+
 import java.awt.*;
 
 public class Log extends MovingObject {

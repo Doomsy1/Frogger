@@ -1,3 +1,9 @@
+/*
+ * LilyPad.java
+ * Ario Barin Ostovary
+ * This class controls the lily pad's drawing, movement, and underwater logic
+ */
+
 import java.awt.*;
 
 public class LilyPad extends MovingObject {

@@ -1,6 +1,8 @@
-/* PongPanel.java
- *
- **/
+/*
+ * FroggerPanel.java
+ * Ario Barin Ostovary
+ * This class controls the game's logic
+ */
 
 import java.awt.*;
 import java.awt.event.*;
@@ -25,6 +27,7 @@ class FroggerPanel extends JPanel implements KeyListener, ActionListener, MouseL
 	private final ArrayList<Car> cars;
 	private final ArrayList<Log> logs;
 	private final ArrayList<LilyPad> lilyPads;
+	private final ArrayList<Alligator> alligators;
 
 	private final ArrayList<Goal> goals;
 
@@ -59,6 +62,10 @@ class FroggerPanel extends JPanel implements KeyListener, ActionListener, MouseL
 		createLilyPads(200, 100, 5, true, 4);
 		createLogs(150, 175, 2, false, 3);
 
+		// Alligators
+		alligators = new ArrayList<>();
+		createAlligators(100, 100, 2, true, 3);
+		createAlligators(50, 100, 2, false, 3);
 
 		// Goals
 		goals = new ArrayList<>();
@@ -110,6 +117,13 @@ class FroggerPanel extends JPanel implements KeyListener, ActionListener, MouseL
 		}
 	}
 
+	private void createAlligators(int y, int width, int speed, boolean left, int count) {
+		int gap = (800 / (count));
+		for (int i = 0; i < count; i++) {
+			alligators.add(new Alligator(gap * i, y, width, speed, left));
+		}
+	}
+
 	private void createGoals(int x, int y, int count, int gap) {
 		for (int i = 0; i < count; i++) {
 			goals.add(new Goal(gap * i + x, y));
@@ -122,6 +136,13 @@ class FroggerPanel extends JPanel implements KeyListener, ActionListener, MouseL
 			return true;
 		}
 
+		// Check if the frog is colliding with a barrier
+		for (Terrain t : barriers) {
+			if (frog.isColliding(t)) {
+				return true;
+			}
+		}
+
 		// Check if the frog is riding a log
 		for (Log l : logs) {
 			if (frog.isRiding(l)) {
@@ -132,6 +153,16 @@ class FroggerPanel extends JPanel implements KeyListener, ActionListener, MouseL
 		// Check if the frog is riding a lily pad
 		for (LilyPad lp : lilyPads) {
 			if (frog.isRiding(lp)) {
+				return false;
+			}
+		}
+
+		// Check if the frog is being eaten by an alligator or is riding the alligator
+		for (Alligator a : alligators) {
+			if (frog.isBeingEaten(a)) {
+				return true;
+			}
+			if (frog.isRiding(a)) {
 				return false;
 			}
 		}
@@ -199,6 +230,14 @@ class FroggerPanel extends JPanel implements KeyListener, ActionListener, MouseL
 				lp.move();
 				if (frog.isRiding(lp)) {
 					frog.slide(lp);
+				}
+			}
+
+			// Move alligators
+			for (Alligator a : alligators) {
+				a.move();
+				if (frog.isRiding(a)) {
+					frog.slide(a);
 				}
 			}
 		}
@@ -294,6 +333,11 @@ class FroggerPanel extends JPanel implements KeyListener, ActionListener, MouseL
 			// Draw lily pads
 			for (LilyPad lp : lilyPads) {
 				lp.draw(g);
+			}
+
+			// Draw alligators
+			for (Alligator a : alligators) {
+				a.draw(g);
 			}
 
 			// Draw goals

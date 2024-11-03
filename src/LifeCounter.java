@@ -1,3 +1,9 @@
+/*
+ * LifeCounter.java
+ * Ario Barin Ostovary
+ * This class controls the life counter's drawing and logic
+ */
+
 import java.awt.*;
 
 public class LifeCounter {

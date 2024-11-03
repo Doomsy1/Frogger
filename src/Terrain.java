@@ -1,3 +1,9 @@
+/*
+ * Terrain.java
+ * Ario Barin Ostovary
+ * This class controls the terrain's drawing
+ */
+
 import java.awt.*;
 
 public class Terrain {
@@ -27,9 +33,5 @@ public class Terrain {
 
     public Rectangle getRect() {
         return new Rectangle(x, y, width, height);
-    }
-
-    public boolean isColliding(Rectangle r) {
-        return r.intersects(getRect());
     }
 }

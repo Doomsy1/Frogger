@@ -1,6 +1,8 @@
-/* Pong.java
- *
- **/
+/*
+ * Frogger.java
+ * Ario Barin Ostovary
+ * This runs the game
+ */
 
 import javax.swing.*;
 

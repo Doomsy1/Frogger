@@ -1,3 +1,9 @@
+/*
+ * TimerBar.java
+ * Ario Barin Ostovary
+ * This class controls the timer bar's drawing and logic
+ */
+
 import java.awt.*;
 
 public class TimerBar {

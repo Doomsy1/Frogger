@@ -1,3 +1,9 @@
+/*
+ * MovingObject.java
+ * Ario Barin Ostovary
+ * This is a superclass for most moving objects in the game
+ */
+
 import java.awt.*;
 
 public class MovingObject {
