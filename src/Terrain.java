@@ -3,9 +3,9 @@ import java.awt.*;
 public class Terrain {
     private final int x, y;
     private final int width, height;
-    private final int type; // 0 = Grass, 1 = Water
+    private final int type;
 
-    public static final int GRASS = 0, WATER = 1;
+    public static final int GRASS = 0, WATER = 1, ROAD = 2, BARRIER = 3;
 
     public Terrain(int x, int y, int width, int height, int type) {
         this.x = x;
@@ -16,7 +16,12 @@ public class Terrain {
     }
 
     public void draw(Graphics g) {
-        g.setColor(type == GRASS ? Color.GREEN : Color.BLUE);
+        switch (type) {
+            case GRASS -> g.setColor(Color.GREEN);
+            case WATER -> g.setColor(Color.BLUE);
+            case ROAD -> g.setColor(Color.GRAY);
+            case BARRIER -> g.setColor(Color.BLACK);
+        }
         g.fillRect(x, y, width, height);
     }
 

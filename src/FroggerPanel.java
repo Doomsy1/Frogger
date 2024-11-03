@@ -13,8 +13,8 @@ class FroggerPanel extends JPanel implements KeyListener, ActionListener, MouseL
 	private static final int FPS = 60;
 	private int screen = GAME; // Change to intro
 	private int score;
-	private LifeCounter lifeCounter = new LifeCounter(400, 0, 3);
-	private TimerBar timerBar = new TimerBar(0, 0, 100, 20, 10, FPS);
+	private LifeCounter lifeCounter = new LifeCounter(600, 750, 3);
+	private TimerBar timerBar = new TimerBar(0, 780, 200, 20, 10, FPS);
 
 	private final boolean[] keys;
 	private final boolean[] keyPressed;
@@ -28,8 +28,10 @@ class FroggerPanel extends JPanel implements KeyListener, ActionListener, MouseL
 
 	private final ArrayList<Goal> goals;
 
-	private final Terrain grass;
+	private final ArrayList<Terrain> grasses;
 	private final Terrain water;
+	private final Terrain road;
+	private final ArrayList<Terrain> barriers;
 
 	private final Font fontComic; // Change font
 
@@ -63,8 +65,16 @@ class FroggerPanel extends JPanel implements KeyListener, ActionListener, MouseL
 		createGoals(75, 100, 5, 150);
 
 		// Terrain
+		barriers = new ArrayList<>();
+		barriers.add(new Terrain(0, 0, WIDTH, 50, Terrain.BARRIER));
+
 		water = new Terrain(0, 0, WIDTH, HEIGHT / 2, Terrain.WATER);
-		grass = new Terrain(0, HEIGHT / 2, WIDTH, HEIGHT / 2, Terrain.GRASS);
+
+		grasses = new ArrayList<>();
+		grasses.add(new Terrain(0, HEIGHT / 2, WIDTH, 100, Terrain.GRASS));
+		grasses.add(new Terrain(0, HEIGHT - 50, WIDTH, 50, Terrain.GRASS));
+
+		road = new Terrain(0, HEIGHT / 2 + 100, WIDTH, 250, Terrain.ROAD);
 
 		score = 0;
 		fontComic = new Font("Comic Sans MS", Font.PLAIN, 32);
@@ -262,8 +272,14 @@ class FroggerPanel extends JPanel implements KeyListener, ActionListener, MouseL
 			g.fillRect(0, 0, getWidth(), getHeight());
 
 			// Draw terrain
-			grass.draw(g);
+			for (Terrain t : grasses) {
+				t.draw(g);
+			}
 			water.draw(g);
+			road.draw(g);
+			for (Terrain t : barriers) {
+				t.draw(g);
+			}
 
 			// Draw cars
 			for (Car c : cars) {
