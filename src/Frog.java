@@ -118,16 +118,19 @@ public class Frog {
         return getRect().intersects(a.getMouthRect()) && a.mouthIsOpen();
     }
     
-    public boolean isRiding(LilyPad lp) {
-        return getRect().intersects(lp.getRect()) && !inAir && !lp.isUnderwater();
+    public boolean isRiding(Turtle lp) {
+        Point center = new Point(x + 25, y + 25);
+        return lp.getRect().contains(center) && !inAir && !lp.isUnderwater();
     }
 
     public boolean isRiding(Log l) {
-        return getRect().intersects(l.getRect()) && !inAir;
+        Point center = new Point(x + 25, y + 25);
+        return l.getRect().contains(center) && !inAir;
     }
 
     public boolean isRiding(Alligator a) {
-        return getRect().intersects(a.getRect()) && !inAir;
+        Point center = new Point(x + 25, y + 25);
+        return a.getRect().contains(center) && !inAir;
     }
     
     public void slide(Log l) {
@@ -135,7 +138,7 @@ public class Frog {
         jumpX += l.getVelocity();
     }
 
-    public void slide(LilyPad lp) {
+    public void slide(Turtle lp) {
         x += lp.getVelocity();
         jumpX += lp.getVelocity();
     }

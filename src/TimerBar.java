@@ -30,6 +30,18 @@ public class TimerBar {
         return timeSpent >= timeLimit;
     }
 
+    public double getTimeLimit() {
+        return timeLimit;
+    }
+
+    public double getTimeSpent() {
+        return timeSpent;
+    }
+
+    public void setTimeSpent(double timeSpent) {
+        this.timeSpent = timeSpent;
+    }
+
     public void reset() {
         timeSpent = 0;
     }
