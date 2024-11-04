@@ -5,13 +5,11 @@
  */
 
 import java.awt.*;
-import java.util.Random;
 
 public class Goal {
     private final int x, y;
     private boolean filled;
     private boolean hasFly;
-    private static final Random rand = new Random();
 
     private static final int WIDTH = 50, HEIGHT = 50;
 
@@ -19,7 +17,7 @@ public class Goal {
         filled = false;
         this.x = x;
         this.y = y;
-        hasFly = rand.nextDouble() < 0.25;
+        hasFly = Util.randomDouble(0, 1) < 0.25;
     }
 
     public Rectangle getRect() {

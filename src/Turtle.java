@@ -15,6 +15,7 @@ public class Turtle extends MovingObject {
     public Turtle(int x, int y, int width, int speed, boolean left, boolean breathing) {
         super(x, y, width, speed, left);
         this.breathing = breathing;
+        breath = Util.randomDouble(0, 1);
     }
 
     public void draw(Graphics g) {

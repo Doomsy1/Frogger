@@ -83,7 +83,7 @@ class FroggerPanel extends JPanel implements KeyListener, ActionListener, MouseL
 	private void initLevelOne() {
 		initBase();
 		
-		// Logs and turtles
+		// Floating objects
 		createLogs(100, 175, 2, false, 3);
 		createTurtles(150, 100, 5, true, 4);
 		createLogs(200, 200, 5, false, 2);
@@ -91,18 +91,47 @@ class FroggerPanel extends JPanel implements KeyListener, ActionListener, MouseL
 		createTurtles(300, 150, 5, true, 4);
 
 		// Cars
-		// createCars(500, 75, 5, true, Car.RED, 3);
-		// createCars(550, 50, 4, false, Car.RED, 3);
-		// createCars(600, 50, 6, true, Car.RED, 3);
-		// createCars(650, 50, 3, false, Car.RED, 3);
-		// createCars(700, 50, 4, true, Car.RED, 3);
+		createCars(500, 75, 5, true, Car.RED, 3);
+		createCars(550, 50, 4, false, Car.RED, 3);
+		createCars(600, 50, 6, true, Car.RED, 3);
+		createCars(650, 50, 3, false, Car.RED, 3);
+		createCars(700, 50, 4, true, Car.RED, 3);
 	}
 
 	private void initLevelTwo() {
 		initBase();
 
-		// Alligators
-		createAlligators(150, 250, 2, false, 2);
+		// Floating objects
+		createAlligators(100, 250, 2, false, 2);
+		createTurtles(150, 100, 5, true, 4);
+		createLogs(200, 200, 7, false, 2);
+		createLogs(250, 150, 3, false, 3);
+		createTurtles(300, 150, 5, true, 4);
+
+		// Cars
+		createCars(500, 75, 6, true, Car.RED, 3);
+		createCars(550, 50, 3, false, Car.RED, 2);
+		createCars(600, 50, 5, true, Car.RED, 6);
+		createCars(650, 50, 2, false, Car.RED, 4);
+		createCars(700, 50, 4, true, Car.RED, 4);
+	}
+
+	private void initLevelThree() {
+		initBase();
+
+		// Floating objects
+		createAlligators(100, 250, 2, false, 2);
+		createTurtles(150, 100, 5, true, 4);
+		createLogs(200, 200, 7, false, 2);
+		createLogs(250, 150, 3, false, 3);
+		createTurtles(300, 150, 5, true, 4);
+
+		// Cars
+		createCars(500, 75, 5, true, Car.RED, 3);
+		createCars(550, 50, 9, false, Car.RED, 2);
+		createCars(600, 50, 6, true, Car.RED, 6);
+		createCars(650, 50, 3, false, Car.RED, 4);
+		createCars(700, 50, 4, true, Car.RED, 4);
 	}
 
 	private void nextLevel() {
