@@ -7,14 +7,17 @@
 import java.awt.*;
 
 public class LifeCounter {
-    private int lives;
+    private int lives = 3;
     private final int x, y;
     private final int lifeWidth = 60, lifeHeight = 60;
 
-    public LifeCounter(int x, int y, int lives) {
+    public LifeCounter(int x, int y) {
         this.x = x;
         this.y = y;
-        this.lives = lives;
+    }
+
+    public void reset() {
+        lives = 3;
     }
 
     public void loseLife() {

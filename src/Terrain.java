@@ -5,13 +5,20 @@
  */
 
 import java.awt.*;
+import java.awt.image.BufferedImage;
 
 public class Terrain {
     private final int x, y;
     private final int width, height;
     private final int type;
 
-    public static final int GRASS = 0, WATER = 1, ROAD = 2, BARRIER = 3;
+    public static final int GRASS = 0, WATER = 1, ROAD = 2;
+
+    private static final BufferedImage grassImage;
+
+    static {
+        grassImage = Util.loadImage("src/assets/Terrain/Grass.png");
+    }
 
     public Terrain(int x, int y, int width, int height, int type) {
         this.x = x;
@@ -23,12 +30,15 @@ public class Terrain {
 
     public void draw(Graphics g) {
         switch (type) {
-            case GRASS -> g.setColor(Color.GREEN);
-            case WATER -> g.setColor(Color.BLUE);
-            case ROAD -> g.setColor(Color.GRAY);
-            case BARRIER -> g.setColor(Color.BLACK);
+            case GRASS -> {
+                for (int i = 0; i < width / 50; i++) {
+                    Util.drawImage(g, grassImage, x + i * 50, y, 50, height);
+                }
+            }
+            // WATER and ROAD are handled in FroggerPanel -- kinda gross
+            default -> {
+            }
         }
-        g.fillRect(x, y, width, height);
     }
 
     public Rectangle getRect() {

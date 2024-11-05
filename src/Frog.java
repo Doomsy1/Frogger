@@ -5,6 +5,7 @@
  */
 
 import java.awt.*;
+import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 
 public class Frog {
@@ -23,6 +24,17 @@ public class Frog {
     private boolean inAir = false;
     private int momentum = 0;
 
+    // Images [direction][movement type] - movement type is either in air (1) or not (0)
+    private static final BufferedImage[][] frogImages;
+
+    static {
+        frogImages = new BufferedImage[4][2];
+        for (int i = 0; i < 4; i++) {
+            frogImages[i][0] = Util.loadImage("src/assets/Frog/" + i + "0.png");
+            frogImages[i][1] = Util.loadImage("src/assets/Frog/" + i + "1.png");
+        }
+    }
+
     public Frog(FroggerPanel froggerPanel, int moveRight, int moveUp, int moveLeft, int moveDown) {
         fp = froggerPanel;
         movementKeys = new int[]{moveRight, moveUp, moveLeft, moveDown};
@@ -31,7 +43,7 @@ public class Frog {
 
     public void reset() {
         x = 400;
-        y = 750;
+        y = 650;
         jumpX = x;
         jumpY = y;
         facing = UP;
@@ -63,19 +75,33 @@ public class Frog {
         jumpStack.clear();
     }
 
+    public void resetMomentum() {
+        momentum = 0;
+    }
+
     private void move() {
+
+        // If the frog is not in the air and the jump stack is empty, the frog is not moving
         if (jumpStack.isEmpty() && x == jumpX && y == jumpY) {
             inAir = false;
+
+            // Move the frog by the momentum 
+            x += momentum;
+            jumpX += momentum;
             return;
         }
 
         if (x == jumpX && y == jumpY && !jumpStack.isEmpty()) {
             facing = jumpStack.remove(0);
-            momentum = 0; // x momentum TODO
             jumpProgress = 0.0;
-            
+
             // If the frog is at the edge of the screen and it is trying to move off the screen, don't jump
-            if ((facing == LEFT && x <= 0) || (facing == RIGHT && x >= 800 - JUMP_DIST) || (facing == UP && y <= 0) || (facing == DOWN && y >= 800 - JUMP_DIST)) {
+            if ((facing == LEFT && x <= 0) || (facing == RIGHT && x >= 800 - JUMP_DIST) || (facing == UP && y <= 0)
+                    || (facing == DOWN && y >= 700 - JUMP_DIST)) {
+
+                // Move the frog by the momentum
+                x += momentum;
+                jumpX += momentum;
                 return;
             }
 
@@ -88,13 +114,15 @@ public class Frog {
             }
         }
 
-        // Ease out
+        // Ease
         double progress = 1.0 - Math.pow(1.0 - jumpProgress, 2);
         x = (int) (x + (jumpX - x) * progress + momentum);
         y = (int) (y + (jumpY - y) * progress);
 
-        jumpProgress += 0.25;
-        
+        jumpX += momentum;
+
+        jumpProgress += 0.2;
+
         if (jumpProgress >= 1.0 || (x == jumpX && y == jumpY)) {
             x = jumpX;
             y = jumpY;
@@ -134,18 +162,15 @@ public class Frog {
     }
     
     public void slide(Log l) {
-        x += l.getVelocity();
-        jumpX += l.getVelocity();
+        momentum = l.getVelocity();
     }
 
     public void slide(Turtle lp) {
-        x += lp.getVelocity();
-        jumpX += lp.getVelocity();
+        momentum = lp.getVelocity();
     }
 
     public void slide(Alligator a) {
-        x += a.getVelocity();
-        jumpX += a.getVelocity();
+        momentum = a.getVelocity();
     }
 
     public boolean inAir() {
@@ -157,8 +182,7 @@ public class Frog {
     }
 
     public void draw(Graphics g) {
-        g.setColor(Color.WHITE);
-        g.fillRect(x, y, 50, 50);
+        Util.drawImage(g, frogImages[facing][inAir ? 1 : 0], x, y, 50, 50);
     }
 
 }

@@ -5,9 +5,19 @@
  */
 
 import java.awt.*;
+import java.awt.image.BufferedImage;
 
 public class Car extends MovingObject {
-    public static final int RED = 0, GREEN = 1, BLUE = 2, YELLOW = 3;
+    public static final int WHITE = 0, PINK = 1, YELLOW = 2, RED = 3, GREEN = 4;
+    private static final int CAR_TYPE_COUNT = 5;
+    public static BufferedImage[] carImages;
+
+    static {
+        carImages = new BufferedImage[CAR_TYPE_COUNT];
+        for (int i = 0; i < CAR_TYPE_COUNT; i++) {
+            carImages[i] = Util.loadImage("src/assets/Cars/Car" + i + ".png");
+        }
+    }
 
     private final int color;
 
@@ -17,12 +27,6 @@ public class Car extends MovingObject {
     }
 
     public void draw(Graphics g) {
-        switch (color) {
-            case RED -> g.setColor(Color.RED);
-            case GREEN -> g.setColor(Color.GREEN);
-            case BLUE -> g.setColor(Color.BLUE);
-            case YELLOW -> g.setColor(Color.YELLOW);
-        }
-        g.fillRect(x, y, width, HEIGHT);
+        Util.drawImage(g, carImages[color], x, y + 4, width, HEIGHT - 8);
     }
 }
