@@ -15,7 +15,7 @@ class FroggerPanel extends JPanel implements KeyListener, ActionListener, MouseL
 	public static final int INTRO = 0, GAME = 1, END = 2;
 	public static final int WIDTH = 800, HEIGHT = 800;
 	private static final int FPS = 60;
-	private int screen = INTRO;
+	private int screen = END;
 	private int score = 0;
 	private int highestScore;
 	private int level = 1;
@@ -72,38 +72,39 @@ class FroggerPanel extends JPanel implements KeyListener, ActionListener, MouseL
 	}
 
 	private void initBase() {
+		frog.reset();
 		cars = new ArrayList<>();
 		logs = new ArrayList<>();
 		Turtles = new ArrayList<>();
 		alligators = new ArrayList<>();
 		goals = new ArrayList<>();
-		water = new Terrain(0, 0, WIDTH, HEIGHT / 2 - 50, Terrain.WATER);
+		water = new Terrain(0, 0, WIDTH, HEIGHT / 2, Terrain.WATER);
 		grasses = new ArrayList<>();
 
 		// Goals
-		createGoals(75, 50, 5, 150);
+		createGoals(75, 100, 5, 150);
 
 		// Terrain
-		grasses.add(new Terrain(0, HEIGHT / 2 - 50, WIDTH, 50, Terrain.GRASS));
-		grasses.add(new Terrain(0, HEIGHT - 150, WIDTH, 50, Terrain.GRASS));
+		grasses.add(new Terrain(0, HEIGHT / 2, WIDTH, 50, Terrain.GRASS));
+		grasses.add(new Terrain(0, HEIGHT - 100, WIDTH, 50, Terrain.GRASS));
 	}
 
 	private void initLevelOne() {
 		initBase();
 
 		// Floating objects
-		createLogs(100, 200, 2, false, 2);
-		createTurtles(150, 100, 5, true, 4);
-		createLogs(200, 200, 5, false, 2);
-		createLogs(250, 150, 3, false, 3);
-		createTurtles(300, 150, 5, true, 4);
+		createLogs(150, 200, 2, false, 2);
+		createTurtles(200, 100, 5, true, 4);
+		createLogs(250, 200, 5, false, 2);
+		createLogs(300, 150, 3, false, 3);
+		createTurtles(350, 150, 5, true, 4);
 
 		// Cars
-		createCars(400, 125, 5, true, Car.WHITE, 3);
-		createCars(450, 50, 4, false, Car.RED, 3);
-		createCars(500, 50, 6, true, Car.PINK, 3);
-		createCars(550, 50, 3, false, Car.GREEN, 3);
-		createCars(600, 50, 4, true, Car.YELLOW, 3);
+		createCars(450, 125, 5, true, Car.WHITE, 3);
+		createCars(500, 50, 4, false, Car.RED, 3);
+		createCars(550, 50, 6, true, Car.PINK, 3);
+		createCars(600, 50, 3, false, Car.GREEN, 3);
+		createCars(650, 50, 4, true, Car.YELLOW, 3);
 	}
 
 	private void initLevelTwo() {
@@ -207,6 +208,10 @@ class FroggerPanel extends JPanel implements KeyListener, ActionListener, MouseL
 	}
 
 	private boolean checkDeath() {
+		if (frog.isDead()) {
+			return false; // don't check for death if the frog is dying
+		}
+
 		// Check if frog is off screen
 		if (frog.offScreen()) {
 			return true;
@@ -265,12 +270,16 @@ class FroggerPanel extends JPanel implements KeyListener, ActionListener, MouseL
 				// Check for goal
 				for (Goal goal : goals) {
 					if (frog.isColliding(goal)) {
+						if (goal.isFilled()) {
+							frog.die();
+							break;
+						}
 						if (goal.fill()) {
 							frog.reset();
 							// add score based on time remaining
 							addScore((int) ((timerBar.getTimeLimit() - timerBar.getTimeSpent()) * 50));
 							// add score based on flies
-							if (goal.hasFly()) {
+							if (goal.fly()) {
 								addScore(100);
 							}
 
@@ -292,7 +301,7 @@ class FroggerPanel extends JPanel implements KeyListener, ActionListener, MouseL
 				}
 				// Check for death
 				if (checkDeath()) {
-					frog.reset();
+					frog.die();
 					timerBar.reset();
 					lifeCounter.loseLife();
 					if (lifeCounter.isGameOver()) {
@@ -437,8 +446,7 @@ class FroggerPanel extends JPanel implements KeyListener, ActionListener, MouseL
 				g.setColor(Color.WHITE);
 				g.setFont(new Font("Arial", Font.BOLD, 48));
 				Util.writeText(g, "Frogger", 0, 100, getWidth(), 48, Util.WHITE_FONT);
-				g.setFont(new Font("Arial", Font.PLAIN, 24));
-				g.drawString("Click to Start", 350, 450);
+				Util.writeText(g, "Click to Start", 350, 450, 24, Util.WHITE_FONT);
 			}
 			case GAME -> {
 				Util.drawImage(g, gameBackground, 0, 0, WIDTH, HEIGHT);
@@ -475,27 +483,22 @@ class FroggerPanel extends JPanel implements KeyListener, ActionListener, MouseL
 				// Draw score
 				g.setFont(gameFont);
 				g.setColor(Color.WHITE);
-				g.drawString("Score: " + score, 50, 700);
+				Util.writeText(g, "Score: " + score, 50, 700, 24, Util.WHITE_FONT);
 			}
 			case END -> {
 				// Draw End Screen
 				g.setColor(Color.BLACK);
 				g.fillRect(0, 0, getWidth(), getHeight());
-				g.setColor(Color.WHITE);
-				g.setFont(new Font("Arial", Font.BOLD, 48));
-				g.drawString("Game Over", 280, 100);
-				g.setFont(new Font("Arial", Font.PLAIN, 36));
-				g.drawString("High Scores:", 320, 160);
+				Util.writeText(g, "Game Over", 25, 24, getWidth() - 50, 48, Util.RED_FONT);
+				Util.writeText(g, "Hi-Scores", 0, 150, 200, 36, Util.YELLOW_FONT);
 				// Display high scores
-				g.setFont(new Font("Arial", Font.PLAIN, 24));
 				ArrayList<Score> highScores = scoreManager.getHighScores();
 				int y = 200;
 				for (Score s : highScores) {
-					g.drawString(s.getName() + ": " + s.getScore(), 340, y);
+					Util.writeText(g, s.getName() + " - " + s.getScore(), 0, y, 24, Util.WHITE_FONT);
 					y += 30;
 				}
-				g.setFont(new Font("Arial", Font.PLAIN, 24));
-				g.drawString("Click to Restart", 320, y + 50);
+				Util.writeText(g, "Click to Restart", 250, getHeight() - 50, 300, 24, Util.WHITE_FONT);
 			}
 		}
 	}

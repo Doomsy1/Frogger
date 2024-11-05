@@ -93,7 +93,11 @@ public class Util {
             return FONT_IMAGES[color][36];
         }
     }
-    
+
+    public static void writeText(Graphics g, String text, int x, int y, int height, int color) {
+        writeText(g, text, x, y, text.length() * height, height, color);
+    }
+
     public static void writeText(Graphics g, String text, int x, int y, int width, int height, int color) {
         int charWidth = width / text.length();
         for (int i = 0; i < text.length(); i++) {

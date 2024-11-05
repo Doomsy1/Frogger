@@ -24,6 +24,17 @@ public class Frog {
     private boolean inAir = false;
     private int momentum = 0;
 
+    private double deathTimer; // 1 -> 0
+    private static final int DEATH_TIME = 30; // number of game frames the frog's death animation lasts
+    private static final int DEATH_FRAMES = 7; // number of frames in the frog's death animation
+    private static final BufferedImage[] DEATH_IMAGES = new BufferedImage[DEATH_FRAMES];
+
+    static {
+        for (int i = 0; i < DEATH_FRAMES; i++) {
+            DEATH_IMAGES[i] = Util.loadImage("src/assets/Death/" + i + ".png");
+        }
+    }
+
     // Images [direction][movement type] - movement type is either in air (1) or not (0)
     private static final BufferedImage[][] frogImages;
 
@@ -43,12 +54,21 @@ public class Frog {
 
     public void reset() {
         x = 400;
-        y = 650;
+        y = 700;
         jumpX = x;
         jumpY = y;
         facing = UP;
         inAir = false;
+        deathTimer = 0.0;
         clearJumpStack();
+    }
+
+    public void die() {
+        clearJumpStack();
+        if (deathTimer > 0.0) {
+            return;
+        }
+        deathTimer = 1.0;
     }
 
     public Rectangle getRect() {
@@ -65,6 +85,10 @@ public class Frog {
     }
 
     private void queueJump(int direction) {
+        if (deathTimer > 0.0) {
+            return;
+        }
+
         if (jumpStack.size() >= STACK_SIZE) {
             return;
         }
@@ -80,6 +104,14 @@ public class Frog {
     }
 
     private void move() {
+        if (deathTimer > 0.0) {
+            deathTimer -= 1.0 / DEATH_TIME;
+            if (deathTimer < 0.0) {
+                deathTimer = 0.0;
+                reset();
+            }
+            return;
+        }
 
         // If the frog is not in the air and the jump stack is empty, the frog is not moving
         if (jumpStack.isEmpty() && x == jumpX && y == jumpY) {
@@ -97,7 +129,7 @@ public class Frog {
 
             // If the frog is at the edge of the screen and it is trying to move off the screen, don't jump
             if ((facing == LEFT && x <= 0) || (facing == RIGHT && x >= 800 - JUMP_DIST) || (facing == UP && y <= 0)
-                    || (facing == DOWN && y >= 700 - JUMP_DIST)) {
+                    || (facing == DOWN && y >= 750 - JUMP_DIST)) {
 
                 // Move the frog by the momentum
                 x += momentum;
@@ -181,8 +213,20 @@ public class Frog {
         return x < -50 || x > 850 || y < -50 || y > 850; // MAGIC NUMBERS
     }
 
+    public boolean isDead() {
+        return deathTimer > 0.0;
+    }
+
+    private int getDeathFrame() {
+        return 6 - (int) (deathTimer * DEATH_FRAMES);
+    }
+
     public void draw(Graphics g) {
-        Util.drawImage(g, frogImages[facing][inAir ? 1 : 0], x, y, 50, 50);
+        if (deathTimer > 0.0) {
+            Util.drawImage(g, DEATH_IMAGES[getDeathFrame()], x, y, 50, 50);
+        } else {
+            Util.drawImage(g, frogImages[facing][inAir ? 1 : 0], x, y, 50, 50);
+        }
     }
 
 }

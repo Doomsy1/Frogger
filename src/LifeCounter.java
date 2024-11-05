@@ -5,11 +5,19 @@
  */
 
 import java.awt.*;
+import java.awt.image.BufferedImage;
 
 public class LifeCounter {
     private int lives = 3;
     private final int x, y;
-    private final int lifeWidth = 60, lifeHeight = 60;
+    private final int lifeWidth = 40, lifeHeight = 40;
+
+    // Load image
+    private static final BufferedImage lifeImage;
+
+    static {
+        lifeImage = Util.loadImage("src/assets/Life/0.png");
+    }
 
     public LifeCounter(int x, int y) {
         this.x = x;
@@ -29,9 +37,8 @@ public class LifeCounter {
     }
 
     public void draw(Graphics g) {
-        g.setColor(Color.BLACK);
         for (int i = 0; i < lives; i++) {
-            g.fillRect(x + i * (lifeWidth + 10), y, lifeWidth, lifeHeight);
+            Util.drawImage(g, lifeImage, x + i * lifeWidth, y, lifeWidth, lifeHeight);
         }
     }
 }
