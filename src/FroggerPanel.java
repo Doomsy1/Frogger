@@ -92,7 +92,7 @@ class FroggerPanel extends JPanel implements KeyListener, ActionListener, MouseL
 		initBase();
 
 		// Floating objects
-		createLogs(100, 175, 2, false, 2);
+		createLogs(100, 200, 2, false, 2);
 		createTurtles(150, 100, 5, true, 4);
 		createLogs(200, 200, 5, false, 2);
 		createLogs(250, 150, 3, false, 3);
@@ -145,7 +145,13 @@ class FroggerPanel extends JPanel implements KeyListener, ActionListener, MouseL
 	private void initLevelFour() {
 		initBase();
 
-		createTurtles(100, 100, 1, true, 1);
+		// createTurtles(100, 100, 1, true, 1);
+		createLogs(100, 300, 1, true, 2);
+		createLogs(150, 300, 1, true, 2);
+		createLogs(200, 300, 1, true, 2);
+		createLogs(250, 300, 1, true, 2);
+		createLogs(300, 300, 1, true, 2);
+
 	}
 
 	private void nextLevel() {
@@ -334,6 +340,11 @@ class FroggerPanel extends JPanel implements KeyListener, ActionListener, MouseL
 
 				// Move frog
 				frog.move(keyPressed);
+
+				// Update goals
+				for (Goal goal : goals) {
+					goal.update();
+				}
 			}
 			case END -> {
 				// End screen logic if any
@@ -398,7 +409,7 @@ class FroggerPanel extends JPanel implements KeyListener, ActionListener, MouseL
 					highestScore = scoreManager.getHighestScore();
                     level = 1;
                     lifeCounter.reset();
-                    initLevelTwo(); // TEST
+                    initLevelOne(); // TEST
                 }
                 case GAME -> {
                 }
@@ -425,7 +436,7 @@ class FroggerPanel extends JPanel implements KeyListener, ActionListener, MouseL
 				g.fillRect(0, 0, getWidth(), getHeight());
 				g.setColor(Color.WHITE);
 				g.setFont(new Font("Arial", Font.BOLD, 48));
-				g.drawString("Welcome to Frogger!", 200, 400);
+				Util.writeText(g, "Frogger", 0, 100, getWidth(), 48, Util.WHITE_FONT);
 				g.setFont(new Font("Arial", Font.PLAIN, 24));
 				g.drawString("Click to Start", 350, 450);
 			}

@@ -18,7 +18,7 @@ public class Frog {
     private static final int JUMP_DIST = 50;
     private static final int RIGHT = 0, UP = 1, LEFT = 2, DOWN = 3;
     private final ArrayList<Integer> jumpStack = new ArrayList<>();
-    private static final int STACK_SIZE = 5;
+    private static final int STACK_SIZE = 2;
 
     private double jumpProgress = 0.0;
     private boolean inAir = false;
