@@ -10,7 +10,7 @@ import java.awt.image.BufferedImage;
 public class LifeCounter {
     private int lives = 3;
     private final int x, y;
-    private final int lifeWidth = 40, lifeHeight = 40;
+    private final int lifeWidth = 30, lifeHeight = 30;
 
     // Load image
     private static final BufferedImage lifeImage;
@@ -38,7 +38,7 @@ public class LifeCounter {
 
     public void draw(Graphics g) {
         for (int i = 0; i < lives; i++) {
-            Util.drawImage(g, lifeImage, x + i * lifeWidth, y, lifeWidth, lifeHeight);
+            Util.drawImage(g, lifeImage, x + (2 - i) * lifeWidth, y, lifeWidth, lifeHeight);
         }
     }
 }

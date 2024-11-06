@@ -74,7 +74,6 @@ public class Goal {
 
     private int getDangerFrame() {
         int frame = 1 - (int) Math.abs(dangerTimer - (DANGER_SPEED / 2)) / (DANGER_SPEED / 4);
-        System.out.println(frame);
         return frame;
     }
 

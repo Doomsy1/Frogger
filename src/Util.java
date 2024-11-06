@@ -1,3 +1,6 @@
+/**
+ * Utility class for graphics and random number generation.
+ */
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.awt.image.FilteredImageSource;
@@ -12,36 +15,20 @@ import javax.imageio.ImageIO;
 public class Util {
     private static final Random RANDOM = new Random();
 
-    public static final int RED_FONT = 0, WHITE_FONT = 1, YELLOW_FONT = 2;
+    public static final int RED_FONT = 0, WHITE_FONT = 1, YELLOW_FONT = 2, FROGGER_FONT = 3;
 
-    // Images (src/assets/Fonts/Red/0.png, 1.png, 2.png, etc.)
-    // [color][char]
-    public static final BufferedImage[][] FONT_IMAGES = new BufferedImage[3][37];
+    // Images
+    public static final BufferedImage[] FONT_IMAGES = new BufferedImage[4];
 
     static {
         loadFonts();
     }
 
     private static void loadFonts() {
-        // 0-9
-        for (int i = 0; i < 10; i++) {
-            FONT_IMAGES[RED_FONT][i] = loadImage("src/assets/Fonts/Red/" + i + ".png");
-            FONT_IMAGES[WHITE_FONT][i] = loadImage("src/assets/Fonts/White/" + i + ".png");
-            FONT_IMAGES[YELLOW_FONT][i] = loadImage("src/assets/Fonts/Yellow/" + i + ".png");
-        }
-
-        // A-Z
-        for (int i = 0; i < 26; i++) {
-            char c = (char)  ('A' + i);
-            FONT_IMAGES[RED_FONT][i + 10] = loadImage("src/assets/Fonts/Red/" + c + ".png");
-            FONT_IMAGES[WHITE_FONT][i + 10] = loadImage("src/assets/Fonts/White/" + c + ".png");
-            FONT_IMAGES[YELLOW_FONT][i + 10] = loadImage("src/assets/Fonts/Yellow/" + c + ".png");
-        }
-        
-        // '-'
-        FONT_IMAGES[RED_FONT][36] = loadImage("src/assets/Fonts/Red/-.png");
-        FONT_IMAGES[WHITE_FONT][36] = loadImage("src/assets/Fonts/White/-.png");
-        FONT_IMAGES[YELLOW_FONT][36] = loadImage("src/assets/Fonts/Yellow/-.png");
+        FONT_IMAGES[RED_FONT] = loadImage("src/assets/Fonts/red.png");
+        FONT_IMAGES[WHITE_FONT] = loadImage("src/assets/Fonts/white.png");
+        FONT_IMAGES[YELLOW_FONT] = loadImage("src/assets/Fonts/yellow.png");
+        FONT_IMAGES[FROGGER_FONT] = loadImage("src/assets/Fonts/frogger.png");
     }
 
     public static int randomInt(int min, int max) {
@@ -56,7 +43,7 @@ public class Util {
         try {
             return ImageIO.read(new File(path));
         } catch (IOException e) {
-            throw new RuntimeException("bruh", e);
+            throw new RuntimeException("Could not load image at path: " + path, e);
         }
     }
 
@@ -85,13 +72,34 @@ public class Util {
     }
 
     private static BufferedImage getFontImage(int color, char c) {
-        if (c >= '0' && c <= '9') {
-            return FONT_IMAGES[color][c - '0'];
-        } else if (c >= 'A' && c <= 'Z') {
-            return FONT_IMAGES[color][c - 'A' + 10];
-        } else {
-            return FONT_IMAGES[color][36];
+        BufferedImage fontImage = FONT_IMAGES[color];
+        String characters = color == FROGGER_FONT ? "FROGE" : "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ-";
+
+        int charIndex = characters.indexOf(c);
+        if (charIndex == -1) {
+            System.out.println("Character not found: " + c);
+            return new BufferedImage(1, fontImage.getHeight(), BufferedImage.TYPE_INT_ARGB);
         }
+
+        int charWidth = fontImage.getWidth() / characters.length();
+        int x = charIndex * charWidth;
+        int y = 0;
+        int width = charWidth;
+        int height = fontImage.getHeight();
+
+        return fontImage.getSubimage(x, y, width, height);
+    }
+
+    public static void writeRightText(Graphics g, String text, int x, int y, int height, int color) {
+        // Writes text right-aligned to the x position
+        int textWidth = text.length() * height;
+        writeText(g, text, x - textWidth, y, textWidth, height, color);
+    }
+
+    public static void writeCenteredText(Graphics g, String text, int center_x, int center_y, int height, int color) {
+        int textWidth = text.length() * height;
+        int x = center_x - textWidth / 2;
+        writeText(g, text, x, center_y, textWidth, height, color);
     }
 
     public static void writeText(Graphics g, String text, int x, int y, int height, int color) {
@@ -101,11 +109,12 @@ public class Util {
     public static void writeText(Graphics g, String text, int x, int y, int width, int height, int color) {
         int charWidth = width / text.length();
         for (int i = 0; i < text.length(); i++) {
-            if (text.charAt(i) == ' ') {
+            char c = text.charAt(i);
+            if (c == ' ') {
                 continue;
             }
 
-            char c = Character.toUpperCase(text.charAt(i));
+            c = Character.toUpperCase(c);
             BufferedImage img = getFontImage(color, c);
             drawImage(g, img, x + i * charWidth, y, charWidth, height);
         }

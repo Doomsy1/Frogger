@@ -53,7 +53,7 @@ class FroggerPanel extends JPanel implements KeyListener, ActionListener, MouseL
 		keyPressed = new boolean[KeyEvent.KEY_LAST + 1];
 		scoreManager = new ScoreManager();
 		timerBar = new TimerBar(0, 780, 200, 20, 10, FPS);
-		lifeCounter = new LifeCounter(600, 750);
+		lifeCounter = new LifeCounter(700, 760);
 		
 		highestScore = scoreManager.getHighestScore();
 
@@ -416,6 +416,7 @@ class FroggerPanel extends JPanel implements KeyListener, ActionListener, MouseL
 					screen = GAME;
 					score = 0;
 					highestScore = scoreManager.getHighestScore();
+					System.out.println(highestScore);
                     level = 1;
                     lifeCounter.reset();
                     initLevelOne(); // TEST
@@ -445,8 +446,8 @@ class FroggerPanel extends JPanel implements KeyListener, ActionListener, MouseL
 				g.fillRect(0, 0, getWidth(), getHeight());
 				g.setColor(Color.WHITE);
 				g.setFont(new Font("Arial", Font.BOLD, 48));
-				Util.writeText(g, "Frogger", 0, 100, getWidth(), 48, Util.WHITE_FONT);
-				Util.writeText(g, "Click to Start", 350, 450, 24, Util.WHITE_FONT);
+				Util.writeCenteredText(g, "Frogger", getWidth() / 2, 100, 48, Util.FROGGER_FONT);
+				Util.writeCenteredText(g, "Click to Start", getWidth() / 2, 450, 24, Util.WHITE_FONT);
 			}
 			case GAME -> {
 				Util.drawImage(g, gameBackground, 0, 0, WIDTH, HEIGHT);
@@ -483,22 +484,29 @@ class FroggerPanel extends JPanel implements KeyListener, ActionListener, MouseL
 				// Draw score
 				g.setFont(gameFont);
 				g.setColor(Color.WHITE);
-				Util.writeText(g, "Score: " + score, 50, 700, 24, Util.WHITE_FONT);
+				Util.writeText(g, "Score ", 0, 10, 30, Util.WHITE_FONT);
+				Util.writeText(g, "" + score, 30 * 6, 10, 30, Util.RED_FONT);
+				
+				Util.writeText(g, "Hi-Score ", getWidth()/2-50, 10, 30, Util.WHITE_FONT);
+				Util.writeText(g, "" + highestScore, getWidth()/2 + 9*30-50, 10, 30, Util.RED_FONT);
 			}
 			case END -> {
 				// Draw End Screen
 				g.setColor(Color.BLACK);
 				g.fillRect(0, 0, getWidth(), getHeight());
-				Util.writeText(g, "Game Over", 25, 24, getWidth() - 50, 48, Util.RED_FONT);
-				Util.writeText(g, "Hi-Scores", 0, 150, 200, 36, Util.YELLOW_FONT);
+				Util.writeCenteredText(g, "Game Over", getWidth() / 2, 50, 60, Util.RED_FONT);
+				Util.writeCenteredText(g, "Hi-Scores", getWidth() / 2, 175, 36, Util.YELLOW_FONT);
 				// Display high scores
 				ArrayList<Score> highScores = scoreManager.getHighScores();
-				int y = 200;
-				for (Score s : highScores) {
-					Util.writeText(g, s.getName() + " - " + s.getScore(), 0, y, 24, Util.WHITE_FONT);
+				int y = 225;
+				// Only display up to 10 scores
+				for (int i = 0; i < Math.min(10, highScores.size()); i++) {
+					Score s = highScores.get(i);
+					Util.writeRightText(g, s.getName() + " -", getWidth()/2 + 24, y, 24, Util.WHITE_FONT);
+					Util.writeText(g, " " + s.getScore(), getWidth()/2 + 24, y, 24, Util.RED_FONT);
 					y += 30;
 				}
-				Util.writeText(g, "Click to Restart", 250, getHeight() - 50, 300, 24, Util.WHITE_FONT);
+				Util.writeCenteredText(g, "Click to Play Again", getWidth() / 2, getHeight() - 50, 24, Util.WHITE_FONT);
 			}
 		}
 	}

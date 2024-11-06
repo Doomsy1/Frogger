@@ -64,7 +64,6 @@ public class ScoreManager {
             }
             out.close();
         } catch (Exception e) {
-            System.out.println("Error saving scores: " + e);
         }
     }
 
@@ -84,7 +83,6 @@ public class ScoreManager {
                 input.close();
             }
         } catch (Exception e) {
-            System.out.println("Error loading scores: " + e);
         }
         return scores;
     }
