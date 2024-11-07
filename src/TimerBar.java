@@ -8,6 +8,7 @@ import java.awt.*;
 
 public class TimerBar {
     private final int x, y, width, height;
+    private static final int OUTLINE_WIDTH = 2;
     private final double timeLimit;
     private double timeSpent;
     private final int FPS;
@@ -47,7 +48,21 @@ public class TimerBar {
     }
 
     public void draw(Graphics g) {
-        g.setColor(Color.RED);
-        g.fillRect(x, y, (int)((timeLimit - timeSpent) / timeLimit * width), height);
+        // White outline
+        g.setColor(Color.WHITE);
+        g.drawRect(x, y, width, height);
+
+        // Black inner rectangle
+        g.setColor(Color.BLACK);
+        g.fillRect(x + OUTLINE_WIDTH, y + OUTLINE_WIDTH, width - 2 * OUTLINE_WIDTH, height - 2 * OUTLINE_WIDTH);
+
+        double ratio = Math.min(1, (timeSpent + 0.3 * timeLimit) / timeLimit);
+
+        int red = (int) (255 * ratio);
+        int green = (int) (255 * (1 - ratio));
+        g.setColor(new Color(red, green, 0));
+
+        // Draw the bar
+        g.fillRect(x + 2 * OUTLINE_WIDTH, y + 2 * OUTLINE_WIDTH, (int) ((timeLimit - timeSpent) / timeLimit * (width - 4 * OUTLINE_WIDTH)), height - 4 * OUTLINE_WIDTH);
     }
 }

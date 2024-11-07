@@ -99,7 +99,7 @@ public class Util {
     public static void writeCenteredText(Graphics g, String text, int center_x, int center_y, int height, int color) {
         int textWidth = text.length() * height;
         int x = center_x - textWidth / 2;
-        writeText(g, text, x, center_y, textWidth, height, color);
+        writeText(g, text, x, center_y - height / 2, textWidth, height, color);
     }
 
     public static void writeText(Graphics g, String text, int x, int y, int height, int color) {

@@ -12,10 +12,10 @@ import javax.swing.*;
 import javax.swing.Timer;
 
 class FroggerPanel extends JPanel implements KeyListener, ActionListener, MouseListener {
-	public static final int INTRO = 0, GAME = 1, END = 2;
+	public static final int INTRO = 0, GAME = 1, LEADERBOARD = 2;
 	public static final int WIDTH = 800, HEIGHT = 800;
 	private static final int FPS = 60;
-	private int screen = END;
+	private int screen = INTRO;
 	private int score = 0;
 	private int highestScore;
 	private int level = 1;
@@ -42,9 +42,14 @@ class FroggerPanel extends JPanel implements KeyListener, ActionListener, MouseL
 
 	private final ScoreManager scoreManager;
 
+	private static final BufferedImage introBackground;
 	private static final BufferedImage gameBackground;
 
+	private Button playButton;
+	private Button leaderboardButton;
+
 	static {
+		introBackground = Util.loadImage("src/assets/Background/Intro.png");
 		gameBackground = Util.loadImage("src/assets/Background/BG.png");
 	}
 
@@ -52,9 +57,9 @@ class FroggerPanel extends JPanel implements KeyListener, ActionListener, MouseL
 		keys = new boolean[KeyEvent.KEY_LAST + 1];
 		keyPressed = new boolean[KeyEvent.KEY_LAST + 1];
 		scoreManager = new ScoreManager();
-		timerBar = new TimerBar(0, 780, 200, 20, 10, FPS);
+		timerBar = new TimerBar(10, 760, 400, 30, 10, FPS);
 		lifeCounter = new LifeCounter(700, 760);
-		
+
 		highestScore = scoreManager.getHighestScore();
 
 		// Frog
@@ -67,8 +72,20 @@ class FroggerPanel extends JPanel implements KeyListener, ActionListener, MouseL
 		requestFocus();
 		addKeyListener(this);
 		addMouseListener(this);
+		addMouseMotionListener(new MouseAdapter() {
+			@Override
+			public void mouseMoved(MouseEvent e) {
+				playButton.setHovered(playButton.isHovered(e));
+				leaderboardButton.setHovered(leaderboardButton.isHovered(e));
+				repaint();
+			}
+		});
 		timer = new Timer(1000 / FPS, this);
 		timer.start();
+
+		// Initialize custom buttons
+		playButton = new Button("Play", 300, 250, 200, 50, new Color(0, 0, 0, 196)); // Custom brown color
+		leaderboardButton = new Button("Leaderboard", 250, 300, 300, 50, new Color(0, 0, 0, 196));
 	}
 
 	private void initBase() {
@@ -143,15 +160,20 @@ class FroggerPanel extends JPanel implements KeyListener, ActionListener, MouseL
 		createCars(700, 50, 4, true, Car.YELLOW, 4);
 	}
 
-	private void initLevelFour() {
+	private void initThumbnailLevel() {
 		initBase();
 
-		// createTurtles(100, 100, 1, true, 1);
-		createLogs(100, 300, 1, true, 2);
-		createLogs(150, 300, 1, true, 2);
-		createLogs(200, 300, 1, true, 2);
-		createLogs(250, 300, 1, true, 2);
-		createLogs(300, 300, 1, true, 2);
+		createLogs(150, 200, 2, false, 2);
+		createTurtles(200, 100, 5, true, 4);
+		logs.add(new Log(300, 250, 200, 0, false));
+		logs.add(new Log(250, 300, 300, 0, false));
+		createTurtles(350, 150, 5, true, 4);
+
+		createCars(450, 125, 5, true, Car.WHITE, 3);
+		createCars(500, 50, 4, false, Car.RED, 3);
+		createCars(550, 50, 6, true, Car.PINK, 3);
+		createCars(600, 50, 3, false, Car.GREEN, 3);
+		createCars(650, 50, 4, true, Car.YELLOW, 3);
 
 	}
 
@@ -163,40 +185,44 @@ class FroggerPanel extends JPanel implements KeyListener, ActionListener, MouseL
 			case 3 -> initLevelThree();
 			default -> {
 				// Game completed
-				screen = END;
+				screen = LEADERBOARD;
 			}
 		}
 	}
 
 	private void createCars(int y, int width, int speed, boolean left, int color, int count) {
 		int gap = (800 / (count));
+		int offset = (int) (Math.random() * (gap - width));
 		for (int i = 0; i < count; i++) {
-			cars.add(new Car(gap * i, y, width, speed, left, color));
+			cars.add(new Car(gap * i + offset, y, width, speed, left, color));
 		}
 	}
 
 	private void createLogs(int y, int width, int speed, boolean left, int count) {
 		int gap = (800 / (count));
+		int offset = (int) (Math.random() * (gap - width));
 		for (int i = 0; i < count; i++) {
-			logs.add(new Log(gap * i, y, width, speed, left));
+			logs.add(new Log(gap * i + offset, y, width, speed, left));
 		}
 	}
 
 	private void createTurtles(int y, int width, int speed, boolean left, int count) {
 		int gap = (800 / (count));
+		int offset = (int) (Math.random() * (gap - width));
 		for (int i = 0; i < count; i++) {
 			boolean breathing = (i == count - 1); // Only the last turtle breathes
-			Turtles.add(new Turtle(gap * i, y, width, speed, left, breathing));
+			Turtles.add(new Turtle(gap * i + offset, y, width, speed, left, breathing));
 		}
 	}
 
 	private void createAlligators(int y, int width, int speed, boolean left, int count) {
 		int gap = (800 / (count));
+		int offset = (int) (Math.random() * (gap - width));
 		for (int i = 0; i < count; i++) {
 			if (i == 0) { // First object is an alligator
-				alligators.add(new Alligator(gap * i, y, width, speed, left));
+				alligators.add(new Alligator(gap * i + offset, y, width, speed, left));
 			} else { // Rest are logs
-				logs.add(new Log(gap * i, y, width, speed, left));
+				logs.add(new Log(gap * i + offset, y, width, speed, left));
 			}
 		}
 	}
@@ -216,7 +242,6 @@ class FroggerPanel extends JPanel implements KeyListener, ActionListener, MouseL
 		if (frog.offScreen()) {
 			return true;
 		}
-
 
 		// Check if the frog is riding a log
 		for (Log l : logs) {
@@ -304,16 +329,15 @@ class FroggerPanel extends JPanel implements KeyListener, ActionListener, MouseL
 					frog.die();
 					timerBar.reset();
 					lifeCounter.loseLife();
-					if (lifeCounter.isGameOver()) {
-						// Game over, prompt for name and save score
-						String name = JOptionPane.showInputDialog("Game Over! Enter your name:");
-						if (name != null && !name.isEmpty()) {
-							String titleCaseName = name.substring(0, 1).toUpperCase() + name.substring(1).toLowerCase();
-							scoreManager.addScore(new Score(titleCaseName, score));
-							scoreManager.saveScores();
-						}
-						screen = END;
+				}
+				if (lifeCounter.isGameOver() && !frog.isDead()) {
+					String name = JOptionPane.showInputDialog("Game Over! Enter your name:");
+					if (name != null && !name.isEmpty()) {
+						String titleCaseName = name.substring(0, 1).toUpperCase() + name.substring(1).toLowerCase();
+						scoreManager.addScore(new Score(titleCaseName, score));
+						scoreManager.saveScores();
 					}
+					screen = LEADERBOARD;
 				}
 				// Move cars
 				for (Car c : cars) {
@@ -355,7 +379,7 @@ class FroggerPanel extends JPanel implements KeyListener, ActionListener, MouseL
 					goal.update();
 				}
 			}
-			case END -> {
+			case LEADERBOARD -> {
 				// End screen logic if any
 			}
 			default -> {
@@ -411,26 +435,15 @@ class FroggerPanel extends JPanel implements KeyListener, ActionListener, MouseL
 
 	@Override
 	public void mousePressed(MouseEvent e) {
-            switch (screen) {
-                case INTRO -> {
-					screen = GAME;
-					score = 0;
-					highestScore = scoreManager.getHighestScore();
-					System.out.println(highestScore);
-                    level = 1;
-                    lifeCounter.reset();
-                    initLevelOne(); // TEST
-                }
-                case GAME -> {
-                }
-                case END -> {
-                    screen = INTRO;
-                    score = 0;
-                    level = 1;
-                    lifeCounter.reset();
-                    initLevelOne();
-                }
-            }
+		if (screen == INTRO) {
+			if (playButton.isClicked(e)) {
+				startGame();
+			} else if (leaderboardButton.isClicked(e)) {
+				viewLeaderboard();
+			}
+		} else if (screen == LEADERBOARD) {
+			screen = INTRO;
+		}
 	}
 
 	@Override
@@ -441,13 +454,13 @@ class FroggerPanel extends JPanel implements KeyListener, ActionListener, MouseL
 	public void paint(Graphics g) {
 		switch (screen) {
 			case INTRO -> {
-				// Draw Intro Screen
-				g.setColor(Color.BLUE);
-				g.fillRect(0, 0, getWidth(), getHeight());
+				Util.drawImage(g, introBackground, 0, 0, WIDTH, HEIGHT);
 				g.setColor(Color.WHITE);
 				g.setFont(new Font("Arial", Font.BOLD, 48));
-				Util.writeCenteredText(g, "Frogger", getWidth() / 2, 100, 48, Util.FROGGER_FONT);
-				Util.writeCenteredText(g, "Click to Start", getWidth() / 2, 450, 24, Util.WHITE_FONT);
+				Util.writeCenteredText(g, "Frogger", getWidth() / 2, 90, 48, Util.FROGGER_FONT);
+				// Draw custom buttons
+				playButton.draw(g);
+				leaderboardButton.draw(g);
 			}
 			case GAME -> {
 				Util.drawImage(g, gameBackground, 0, 0, WIDTH, HEIGHT);
@@ -484,30 +497,43 @@ class FroggerPanel extends JPanel implements KeyListener, ActionListener, MouseL
 				// Draw score
 				g.setFont(gameFont);
 				g.setColor(Color.WHITE);
-				Util.writeText(g, "Score ", 0, 10, 30, Util.WHITE_FONT);
-				Util.writeText(g, "" + score, 30 * 6, 10, 30, Util.RED_FONT);
-				
-				Util.writeText(g, "Hi-Score ", getWidth()/2-50, 10, 30, Util.WHITE_FONT);
-				Util.writeText(g, "" + highestScore, getWidth()/2 + 9*30-50, 10, 30, Util.RED_FONT);
+				Util.writeText(g, "Score ", 30, 15, 30, Util.WHITE_FONT);
+				Util.writeText(g, "" + score, 30 * 7, 15, 30, Util.RED_FONT);
+
+				Util.writeText(g, "Hi-Score ", getWidth() / 2 - 50, 15, 30, Util.WHITE_FONT);
+				Util.writeText(g, "" + highestScore, getWidth() / 2 + 9 * 30 - 50, 15, 30, Util.RED_FONT);
 			}
-			case END -> {
+			case LEADERBOARD -> {
 				// Draw End Screen
 				g.setColor(Color.BLACK);
 				g.fillRect(0, 0, getWidth(), getHeight());
-				Util.writeCenteredText(g, "Game Over", getWidth() / 2, 50, 60, Util.RED_FONT);
-				Util.writeCenteredText(g, "Hi-Scores", getWidth() / 2, 175, 36, Util.YELLOW_FONT);
+				Util.writeCenteredText(g, "Hi-Scores", getWidth() / 2, 100, 60, Util.YELLOW_FONT);
 				// Display high scores
 				ArrayList<Score> highScores = scoreManager.getHighScores();
-				int y = 225;
-				// Only display up to 10 scores
-				for (int i = 0; i < Math.min(10, highScores.size()); i++) {
+				int y = 160;
+
+				for (int i = 0; i < Math.min(15, highScores.size()); i++) {
 					Score s = highScores.get(i);
-					Util.writeRightText(g, s.getName() + " -", getWidth()/2 + 24, y, 24, Util.WHITE_FONT);
-					Util.writeText(g, " " + s.getScore(), getWidth()/2 + 24, y, 24, Util.RED_FONT);
+					Util.writeRightText(g, s.getName() + " -", getWidth() / 2 + 24, y, 24, Util.WHITE_FONT);
+					Util.writeText(g, " " + s.getScore(), getWidth() / 2 + 24, y, 24, Util.RED_FONT);
 					y += 30;
 				}
-				Util.writeCenteredText(g, "Click to Play Again", getWidth() / 2, getHeight() - 50, 24, Util.WHITE_FONT);
+				Util.writeCenteredText(g, "Click to Play Again", getWidth() / 2, getHeight() - 50, 24,
+						Util.YELLOW_FONT);
 			}
 		}
+	}
+
+	private void startGame() {
+		screen = GAME;
+		score = 0;
+		highestScore = scoreManager.getHighestScore();
+		level = 1;
+		lifeCounter.reset();
+		initLevelOne(); // TEST
+	}
+
+	private void viewLeaderboard() {
+		screen = LEADERBOARD;
 	}
 }

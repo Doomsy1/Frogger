@@ -51,9 +51,6 @@ public class ScoreManager {
         }
         
         Collections.sort(highScores);
-        if (highScores.size() > 10) {
-            highScores = new ArrayList<>(highScores.subList(0, 10));
-        }
     }
 
     public void saveScores() {
