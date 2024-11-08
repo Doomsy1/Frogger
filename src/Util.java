@@ -18,17 +18,36 @@ public class Util {
     public static final int RED_FONT = 0, WHITE_FONT = 1, YELLOW_FONT = 2, FROGGER_FONT = 3;
 
     // Images
-    public static final BufferedImage[] FONT_IMAGES = new BufferedImage[4];
+    public static final BufferedImage[] FULL_FONT_IMAGES = new BufferedImage[4];
+    public static final BufferedImage[][] FONT_IMAGES = new BufferedImage[4][128];
+
+    public static final String DEFAULT_FONT_CHARACTERS = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ-";
+    public static final String FROGGER_FONT_CHARACTERS = "FROGE";
 
     static {
         loadFonts();
     }
 
     private static void loadFonts() {
-        FONT_IMAGES[RED_FONT] = loadImage("src/assets/Fonts/red.png");
-        FONT_IMAGES[WHITE_FONT] = loadImage("src/assets/Fonts/white.png");
-        FONT_IMAGES[YELLOW_FONT] = loadImage("src/assets/Fonts/yellow.png");
-        FONT_IMAGES[FROGGER_FONT] = loadImage("src/assets/Fonts/frogger.png");
+        FULL_FONT_IMAGES[RED_FONT] = loadImage("src/assets/Fonts/red.png");
+        for (char c : DEFAULT_FONT_CHARACTERS.toCharArray()) {
+            FONT_IMAGES[RED_FONT][c] = getFontImage(RED_FONT, c);
+        }
+
+        FULL_FONT_IMAGES[WHITE_FONT] = loadImage("src/assets/Fonts/white.png");
+        for (char c : DEFAULT_FONT_CHARACTERS.toCharArray()) {
+            FONT_IMAGES[WHITE_FONT][c] = getFontImage(WHITE_FONT, c);
+        }
+
+        FULL_FONT_IMAGES[YELLOW_FONT] = loadImage("src/assets/Fonts/yellow.png");
+        for (char c : DEFAULT_FONT_CHARACTERS.toCharArray()) {
+            FONT_IMAGES[YELLOW_FONT][c] = getFontImage(YELLOW_FONT, c);
+        }
+        
+        FULL_FONT_IMAGES[FROGGER_FONT] = loadImage("src/assets/Fonts/frogger.png");
+        for (char c : FROGGER_FONT_CHARACTERS.toCharArray()) {
+            FONT_IMAGES[FROGGER_FONT][c] = getFontImage(FROGGER_FONT, c);
+        }
     }
 
     public static int randomInt(int min, int max) {
@@ -72,7 +91,7 @@ public class Util {
     }
 
     private static BufferedImage getFontImage(int color, char c) {
-        BufferedImage fontImage = FONT_IMAGES[color];
+        BufferedImage fontImage = FULL_FONT_IMAGES[color];
         String characters = color == FROGGER_FONT ? "FROGE" : "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ-";
 
         int charIndex = characters.indexOf(c);
@@ -115,8 +134,8 @@ public class Util {
             }
 
             c = Character.toUpperCase(c);
-            BufferedImage img = getFontImage(color, c);
-            drawImage(g, img, x + i * charWidth, y, charWidth, height);
+            BufferedImage fontImage = FONT_IMAGES[color][c];
+            drawImage(g, fontImage, x + i * charWidth, y, charWidth, height);
         }
     }
 }

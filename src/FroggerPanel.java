@@ -83,9 +83,8 @@ class FroggerPanel extends JPanel implements KeyListener, ActionListener, MouseL
 		timer = new Timer(1000 / FPS, this);
 		timer.start();
 
-		// Initialize custom buttons
-		playButton = new Button("Play", 300, 250, 200, 50, new Color(0, 0, 0, 196)); // Custom brown color
-		leaderboardButton = new Button("Leaderboard", 250, 300, 300, 50, new Color(0, 0, 0, 196));
+		playButton = new Button("Play", 300, 252, 200, 50, new Color(0, 0, 0, 196));
+		leaderboardButton = new Button("Leaderboard", 250, 302, 300, 50, new Color(0, 0, 0, 196));
 	}
 
 	private void initBase() {
@@ -128,36 +127,36 @@ class FroggerPanel extends JPanel implements KeyListener, ActionListener, MouseL
 		initBase();
 
 		// Floating objects
-		createAlligators(100, 200, 2, false, 2);
-		createTurtles(150, 100, 5, true, 4);
-		createLogs(200, 200, 7, false, 2);
-		createLogs(250, 150, 3, false, 3);
-		createTurtles(300, 150, 5, true, 4);
+		createAlligators(150, 200, 2, false, 2);
+		createTurtles(200, 100, 5, true, 4);
+		createLogs(250, 200, 7, false, 2);
+		createLogs(300, 150, 3, false, 3);
+		createTurtles(350, 150, 5, true, 4);
 
 		// Cars
-		createCars(400, 125, 6, true, Car.WHITE, 3);
-		createCars(450, 50, 3, false, Car.RED, 2);
-		createCars(500, 50, 5, true, Car.PINK, 4);
-		createCars(550, 50, 2, false, Car.GREEN, 3);
-		createCars(600, 50, 4, true, Car.YELLOW, 3);
+		createCars(450, 125, 6, true, Car.WHITE, 3);
+		createCars(500, 50, 3, false, Car.RED, 2);
+		createCars(550, 50, 5, true, Car.PINK, 4);
+		createCars(600, 50, 2, false, Car.GREEN, 3);
+		createCars(650, 50, 4, true, Car.YELLOW, 3);
 	}
 
 	private void initLevelThree() {
 		initBase();
 
 		// Floating objects
-		createAlligators(100, 250, 2, false, 2);
-		createTurtles(150, 100, 5, true, 4);
-		createLogs(200, 200, 7, false, 2);
-		createLogs(250, 150, 3, false, 3);
-		createTurtles(300, 150, 5, true, 4);
+		createAlligators(150, 250, 2, false, 2);
+		createTurtles(200, 100, 5, true, 4);
+		createLogs(250, 200, 7, false, 2);
+		createLogs(300, 150, 3, false, 3);
+		createTurtles(350, 150, 5, true, 4);
 
 		// Cars
-		createCars(500, 125, 5, true, Car.RED, 3);
-		createCars(550, 50, 9, false, Car.WHITE, 2);
-		createCars(600, 50, 6, true, Car.PINK, 6);
-		createCars(650, 50, 3, false, Car.GREEN, 4);
-		createCars(700, 50, 4, true, Car.YELLOW, 4);
+		createCars(450, 125, 5, true, Car.RED, 3);
+		createCars(500, 50, 9, false, Car.WHITE, 2);
+		createCars(550, 50, 6, true, Car.PINK, 6);
+		createCars(600, 50, 3, false, Car.GREEN, 4);
+		createCars(650, 50, 4, true, Car.YELLOW, 4);
 	}
 
 	private void initThumbnailLevel() {
@@ -174,7 +173,6 @@ class FroggerPanel extends JPanel implements KeyListener, ActionListener, MouseL
 		createCars(550, 50, 6, true, Car.PINK, 3);
 		createCars(600, 50, 3, false, Car.GREEN, 3);
 		createCars(650, 50, 4, true, Car.YELLOW, 3);
-
 	}
 
 	private void nextLevel() {
@@ -455,9 +453,7 @@ class FroggerPanel extends JPanel implements KeyListener, ActionListener, MouseL
 		switch (screen) {
 			case INTRO -> {
 				Util.drawImage(g, introBackground, 0, 0, WIDTH, HEIGHT);
-				g.setColor(Color.WHITE);
-				g.setFont(new Font("Arial", Font.BOLD, 48));
-				Util.writeCenteredText(g, "Frogger", getWidth() / 2, 90, 48, Util.FROGGER_FONT);
+				Util.writeCenteredText(g, "Frogger", getWidth() / 2, 90, 60, Util.FROGGER_FONT);
 				// Draw custom buttons
 				playButton.draw(g);
 				leaderboardButton.draw(g);

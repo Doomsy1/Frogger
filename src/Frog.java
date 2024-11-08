@@ -104,7 +104,7 @@ public class Frog {
     }
 
     private void move() {
-        if (deathTimer > 0.0) {
+        if (deathTimer > 0.0) { // should be moved out of move()
             deathTimer -= 1.0 / DEATH_TIME;
             if (deathTimer < 0.0) {
                 deathTimer = 0.0;
@@ -123,6 +123,7 @@ public class Frog {
             return;
         }
 
+        // If the frog is at the destination and the jump stack is not empty, the frog is start
         if (x == jumpX && y == jumpY && !jumpStack.isEmpty()) {
             facing = jumpStack.remove(0);
             jumpProgress = 0.0;
@@ -161,21 +162,36 @@ public class Frog {
             inAir = false;
         }
     }
+
+    public boolean isColliding(Rectangle r) {
+        int frogCenterX = x + 25;
+        int frogCenterY = y + 25;
+        int frogRadius = 25;
+
+        int rectCenterX = r.x + r.width / 2;
+        int rectCenterY = r.y + r.height / 2;
+
+        int deltaX = frogCenterX - rectCenterX;
+        int deltaY = frogCenterY - rectCenterY;
+        double distance = Math.sqrt(deltaX * deltaX + deltaY * deltaY);
+
+        return distance < (frogRadius + Math.min(r.width, r.height) / 2);
+    }
     
     public boolean isColliding(Terrain t) {
-        return getRect().intersects(t.getRect());
+        return isColliding(t.getRect());
     }
     
     public boolean isColliding(Goal g) {
-        return getRect().intersects(g.getRect());
+        return isColliding(g.getRect());
     }
     
     public boolean isColliding(Car c) {
-        return getRect().intersects(c.getRect());
+        return isColliding(c.getRect());
     }
 
     public boolean isBeingEaten(Alligator a) {
-        return getRect().intersects(a.getMouthRect()) && a.mouthIsOpen();
+        return isColliding(a.getMouthRect()) && a.mouthIsOpen();
     }
     
     public boolean isRiding(Turtle lp) {
