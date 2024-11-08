@@ -12,6 +12,7 @@ public class Car extends MovingObject {
     private static final int CAR_TYPE_COUNT = 5;
     public static BufferedImage[] carImages;
 
+    // Load the car images
     static {
         carImages = new BufferedImage[CAR_TYPE_COUNT];
         for (int i = 0; i < CAR_TYPE_COUNT; i++) {
@@ -27,6 +28,7 @@ public class Car extends MovingObject {
     }
 
     public void draw(Graphics g) {
+        // Draw the car
         Util.drawImage(g, carImages[color], x, y + 4, width, HEIGHT - 8);
     }
 }

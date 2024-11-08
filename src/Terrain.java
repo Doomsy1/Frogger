@@ -1,7 +1,7 @@
 /*
  * Terrain.java
  * Ario Barin Ostovary
- * This class controls the terrain's drawing
+ * This class controls the terrain's drawing.
  */
 
 import java.awt.*;
@@ -16,6 +16,7 @@ public class Terrain {
 
     private static final BufferedImage grassImage;
 
+    // Load the grass image
     static {
         grassImage = Util.loadImage("src/assets/Terrain/Grass.png");
     }
@@ -30,6 +31,7 @@ public class Terrain {
 
     public void draw(Graphics g) {
         switch (type) {
+            // Draw the grass in 50x50 tiles
             case GRASS -> {
                 for (int i = 0; i < width / 50; i++) {
                     Util.drawImage(g, grassImage, x + i * 50, y, 50, height);

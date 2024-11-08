@@ -1,3 +1,9 @@
+/*
+ * Turtle.java
+ * Ario Barin Ostovary
+ * This class controls the turtle's drawing and logic.
+ */
+
 import java.awt.*;
 import java.awt.image.BufferedImage;
 
@@ -11,6 +17,7 @@ public class Turtle extends MovingObject {
 
     private static BufferedImage[] turtleImages;
 
+    // Load the turtle images
     static {
         turtleImages = new BufferedImage[NUM_FRAMES];
         for (int i = 0; i < NUM_FRAMES; i++) {
@@ -21,6 +28,8 @@ public class Turtle extends MovingObject {
     public Turtle(int x, int y, int width, int speed, boolean left, boolean breathing) {
         super(x, y, width, speed, left);
         this.breathing = breathing;
+
+        // Start the strokes at a random point so they aren't all in sync
         stroke = Util.randomDouble(0, 1);
     }
 
@@ -34,9 +43,9 @@ public class Turtle extends MovingObject {
 
     private int getFrame() {
         if (!breathing) {
-            return (int) (stroke * (NUM_FRAMES - 2));
+            return (int) (stroke * (NUM_FRAMES - 2)); // Desmos
         }
-        return (int) (stroke * (NUM_FRAMES + 3)) % NUM_FRAMES;
+        return (int) (stroke * (NUM_FRAMES + 3)) % NUM_FRAMES; // Desmos
     }
 
     public void draw(Graphics g) {
@@ -45,24 +54,20 @@ public class Turtle extends MovingObject {
     }
 
     public boolean isUnderwater() {
+        // Turtle is underwater if the frame is 3 or 4
         return getFrame() >= 3;
     }
 
     @Override
     public void move() {
+        // Update the stroke based on whether the turtle is breathing or not
         if (!breathing) {
             stroke = (stroke + 1.0 / STROKE_SPEED) % 1;
         } else {
             stroke = (stroke + 1.0 / BREATH_SPEED) % 1;
         }
-        if (left) {
-            x -= speed;
-        } else {
-            x += speed;
-        }
 
-        if (notVisible()) {
-            x = left ? 800 : -width;
-        }
+        // Move
+        super.move();
     }
 }

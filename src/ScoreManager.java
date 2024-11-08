@@ -1,7 +1,7 @@
 /*
  * ScoreManager.java
  * Ario Barin Ostovary
- * Manages loading, saving, and updating high scores
+ * Manages loading, saving, and updating high scores.
  */
 
 import java.io.*;
@@ -20,6 +20,7 @@ public class ScoreManager {
     }
 
     public int getHighestScore() {
+        // If the high scores are empty, return 0
         if (highScores.isEmpty()) {
             return 0;
         }
@@ -27,12 +28,13 @@ public class ScoreManager {
     }
 
     public void addScore(Score score) {
-        // if the player's score is already in the high scores, keep the highest score
+        // If the high scores are empty, add the score and return
         if (highScores.isEmpty()) {
             highScores.add(score);
             return;
         }
         
+        // Check if the score already exists
         Score existingScore = null;
         for (Score sc : highScores) {
             if (sc.getName().equals(score.getName())) {
@@ -41,15 +43,18 @@ public class ScoreManager {
             }
         }
         
+        // If the score already exists, keep the highest score
         if (existingScore != null) {
             if (existingScore.getScore() <= score.getScore()) {
                 highScores.remove(existingScore);
                 highScores.add(score);
             }
         } else {
+            // If the score doesn't exist, add it
             highScores.add(score);
         }
         
+        // Sort the high scores
         Collections.sort(highScores);
     }
 
@@ -69,6 +74,7 @@ public class ScoreManager {
         try {
             File file = new File(scoreFile);
             if (file.exists()) {
+                // Read the scores from the file
                 Scanner input = new Scanner(file);
                 while (input.hasNextLine()) {
                     String name = input.nextLine();
@@ -80,7 +86,12 @@ public class ScoreManager {
                 input.close();
             }
         } catch (Exception e) {
+            System.out.println("bruh cant load scores");
         }
+
+        // Sort the high scores
+        Collections.sort(scores);
+
         return scores;
     }
 }

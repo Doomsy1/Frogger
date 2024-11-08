@@ -23,6 +23,7 @@ public class TimerBar {
     }
 
     public void update() {
+        // Update the time spent
         timeSpent += 1.0 / FPS;
         timeSpent = Math.min(timeSpent, timeLimit);
     }
@@ -56,8 +57,11 @@ public class TimerBar {
         g.setColor(Color.BLACK);
         g.fillRect(x + OUTLINE_WIDTH, y + OUTLINE_WIDTH, width - 2 * OUTLINE_WIDTH, height - 2 * OUTLINE_WIDTH);
 
+        // Calculate the ratio of the time spent
         double ratio = Math.min(1, (timeSpent + 0.3 * timeLimit) / timeLimit);
 
+        // Calculate the color of the bar - red for the time spent, green for the time left
+        // This will make the bar transition smoothly
         int red = (int) (255 * ratio);
         int green = (int) (255 * (1 - ratio));
         g.setColor(new Color(red, green, 0));

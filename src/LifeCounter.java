@@ -12,9 +12,9 @@ public class LifeCounter {
     private final int x, y;
     private final int lifeWidth = 30, lifeHeight = 30;
 
-    // Load image
     private static final BufferedImage lifeImage;
 
+    // Load the life image
     static {
         lifeImage = Util.loadImage("src/assets/Life/0.png");
     }
@@ -37,6 +37,7 @@ public class LifeCounter {
     }
 
     public void draw(Graphics g) {
+        // Draw the life counter
         for (int i = 0; i < lives; i++) {
             Util.drawImage(g, lifeImage, x + (2 - i) * lifeWidth, y, lifeWidth, lifeHeight);
         }

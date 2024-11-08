@@ -6,10 +6,10 @@ Luke
 1513
 Anthony
 1432
+Ravi
+1324
 Tarun
 1188
-Ravi
-977
 Ant
 796
 Benicio
@@ -28,6 +28,8 @@ Walter white
 290
 Krish
 206
+Sam
+160
 Hi
 100
 Praagney
@@ -37,4 +39,6 @@ Bruh
 .
 0
 Moooooo
+0
+S
 0

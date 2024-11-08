@@ -18,6 +18,7 @@ public class Frogger extends JFrame {
     }
 
     public static void main(String[] arguments) {
+        // Run the game
         new Frogger();
     }
 }

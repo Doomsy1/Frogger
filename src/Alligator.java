@@ -26,7 +26,7 @@ public class Alligator extends MovingObject {
     }
 
     public boolean mouthIsOpen() {
-        return mouth >= 0.5;
+        return mouth >= 0.5; // Mouth open for 50% of the cycle
     }
 
     public Rectangle getMouthRect() {
@@ -40,11 +40,11 @@ public class Alligator extends MovingObject {
     @Override
     public void move() {
         super.move();
-        mouth = (mouth + 1.0 / MOUTH_CYCLE) % 1.0;
+        mouth = (mouth + 1.0 / MOUTH_CYCLE) % 1.0; // Update mouth position
     }
 
     public void draw(Graphics g) {
-        // draw the body
+        // Draw the body
         Util.drawImage(g, alligatorImages[mouthIsOpen() ? 1 : 0], x, y, width, HEIGHT);
     }
 }
