@@ -36,7 +36,8 @@ public class Frog {
         }
     }
 
-    // Images [direction][movement type] - movement type is either in air (1) or not (0)
+    // Images [direction][movement type] - movement type is either in air (1) or not
+    // (0)
     private static final BufferedImage[][] frogImages;
 
     // Load the frog images
@@ -66,10 +67,12 @@ public class Frog {
     }
 
     public void die() {
-        // Clear the jump stack to prevent the frog from jumping while dead and after death
+        // Clear the jump stack to prevent the frog from jumping while dead and after
+        // death
         clearJumpStack();
 
-        // If the frog is already dead, do nothing - this is to prevent the frog from dying multiple times
+        // If the frog is already dead, do nothing - this is to prevent the frog from
+        // dying multiple times
         if (deathTimer > 0.0) {
             return;
         }
@@ -130,7 +133,8 @@ public class Frog {
             return;
         }
 
-        // If the frog is not in the air and the jump stack is empty, the frog is not moving
+        // If the frog is not in the air and the jump stack is empty, the frog is not
+        // moving
         if (jumpStack.isEmpty() && x == jumpX && y == jumpY) {
             inAir = false;
 
@@ -140,12 +144,14 @@ public class Frog {
             return;
         }
 
-        // If the frog is at the destination and the jump stack is not empty, the frog is starting a jump
+        // If the frog is at the destination and the jump stack is not empty, the frog
+        // is starting a jump
         if (x == jumpX && y == jumpY && !jumpStack.isEmpty()) {
             facing = jumpStack.remove(0);
             jumpProgress = 0.0;
 
-            // If the frog is at the edge of the screen and it is trying to move off the screen, don't jump
+            // If the frog is at the edge of the screen and it is trying to move off the
+            // screen, don't jump
             if ((facing == LEFT && x <= 0) || (facing == RIGHT && x >= 800 - JUMP_DIST) || (facing == UP && y <= 0)
                     || (facing == DOWN && y >= 750 - JUMP_DIST)) {
 
@@ -181,7 +187,8 @@ public class Frog {
     }
 
     public boolean isColliding(Rectangle r) {
-        // Calculate the distance between the frog and the rectangle - circle collision detection (more forgiving)
+        // Calculate the distance between the frog and the rectangle - circle collision
+        // detection (more forgiving)
         int frogCenterX = x + 25;
         int frogCenterY = y + 25;
         int frogRadius = 25;
@@ -194,32 +201,35 @@ public class Frog {
         int deltaY = frogCenterY - rectCenterY;
         double distance = Math.sqrt(deltaX * deltaX + deltaY * deltaY);
 
-        // If the distance is less than the sum of the frog's radius and half the rectangle's width or height, the frog is colliding
+        // If the distance is less than the sum of the frog's radius and half the
+        // rectangle's width or height, the frog is colliding
         return distance < (frogRadius + Math.min(r.width, r.height) / 2);
     }
-    
+
     public boolean isColliding(Terrain t) {
         // Check if the frog is colliding with the terrain
         return isColliding(t.getRect());
     }
-    
+
     public boolean isColliding(Goal g) {
         // Check if the frog is colliding with the goal
         return isColliding(g.getRect());
     }
-    
+
     public boolean isColliding(Car c) {
         // Check if the frog is colliding with the car
         return isColliding(c.getRect());
     }
 
     public boolean isBeingEaten(Alligator a) {
-        // Check if the frog is colliding with the alligator's mouth and the alligator's mouth is open
+        // Check if the frog is colliding with the alligator's mouth and the alligator's
+        // mouth is open
         return isColliding(a.getMouthRect()) && a.mouthIsOpen();
     }
-    
+
     public boolean isRiding(Turtle lp) {
-        // Check if the frog is colliding with the turtle and the turtle is not underwater
+        // Check if the frog is colliding with the turtle and the turtle is not
+        // underwater
         Point center = new Point(x + 25, y + 25);
         return lp.getRect().contains(center) && !inAir && !lp.isUnderwater();
     }
@@ -231,11 +241,12 @@ public class Frog {
     }
 
     public boolean isRiding(Alligator a) {
-        // Check if the frog is colliding with the alligator and the frog is not in the air
+        // Check if the frog is colliding with the alligator and the frog is not in the
+        // air
         Point center = new Point(x + 25, y + 25);
         return a.getRect().contains(center) && !inAir;
     }
-    
+
     public void slide(Log l) {
         // Set the momentum to the log's velocity
         momentum = l.getVelocity();
