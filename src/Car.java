@@ -8,6 +8,7 @@ import java.awt.*;
 import java.awt.image.BufferedImage;
 
 public class Car extends MovingObject {
+    // Car colors - different images for each color
     public static final int WHITE = 0, PINK = 1, YELLOW = 2, RED = 3, GREEN = 4;
     private static final int CAR_TYPE_COUNT = 5;
     public static BufferedImage[] carImages;

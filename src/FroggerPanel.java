@@ -154,20 +154,21 @@ class FroggerPanel extends JPanel implements KeyListener, ActionListener, MouseL
 		initBase();
 
 		// Floating objects
-		createAlligators(150, 250, 2, false, 2);
-		createTurtles(200, 100, 5, true, 4);
-		createLogs(250, 200, 7, false, 2);
-		createLogs(300, 150, 3, false, 3);
-		createTurtles(350, 150, 5, true, 4);
+		createAlligators(150, 200, 3, false, 3);
+		createTurtles(200, 100, 5, true, 3);
+		createLogs(250, 200, 6, false, 1);
+		createLogs(300, 150, 4, false, 3);
+		createTurtles(350, 150, 2, true, 3);
 
 		// Cars
-		createCars(450, 125, 5, true, Car.RED, 3);
-		createCars(500, 50, 9, false, Car.WHITE, 2);
-		createCars(550, 50, 6, true, Car.PINK, 6);
-		createCars(600, 50, 3, false, Car.GREEN, 4);
-		createCars(650, 50, 4, true, Car.YELLOW, 4);
+		createCars(450, 125, 5, true, Car.WHITE, 3);
+		createCars(500, 50, 3, false, Car.RED, 3);
+		createCars(550, 50, 6, true, Car.PINK, 3);
+		createCars(600, 50, 2, false, Car.GREEN, 3);
+		createCars(650, 50, 4, true, Car.YELLOW, 3);
 	}
 
+	// Thumbnail level - for intro screen
 	private void initThumbnailLevel() {
 		initBase();
 
@@ -574,7 +575,7 @@ class FroggerPanel extends JPanel implements KeyListener, ActionListener, MouseL
 		highestScore = scoreManager.getHighestScore();
 		level = 1;
 		lifeCounter.reset();
-		initLevelOne(); // ARIO
+		initLevelThree(); // TEST
 	}
 
 	private void viewLeaderboard() {

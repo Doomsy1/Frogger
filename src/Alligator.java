@@ -29,6 +29,7 @@ public class Alligator extends MovingObject {
         return mouth >= 0.5; // Mouth open for 50% of the cycle
     }
 
+    // Get the rectangle of the alligator's mouth
     public Rectangle getMouthRect() {
         if (left) {
             return new Rectangle(x, y, 50, HEIGHT);
